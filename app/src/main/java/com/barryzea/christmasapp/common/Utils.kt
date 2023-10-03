@@ -21,17 +21,17 @@ fun getDays():String{
 
     var christmasDays =TimeUnit.MILLISECONDS.toDays(setupChristmas.timeInMillis)
     if(Calendar.getInstance().timeInMillis > setupChristmas.timeInMillis){
-        var cal = Calendar.getInstance()
+        val cal = Calendar.getInstance()
         cal.add(Calendar.YEAR,1)
         christmasYear = cal.get(Calendar.YEAR)
         Log.e("christmasYear + 1", christmasYear.toString())
         setupChristmas.set(christmasYear,12,25)
     }
 
-    var days = (christmasDays - TimeUnit.MILLISECONDS.toDays(calendar.timeInMillis)).toInt()
-    var hours= (23-calendar.get(Calendar.HOUR_OF_DAY))
-    var minutes = (60-calendar.get(Calendar.MINUTE))
-    var seconds = (60-calendar.get(Calendar.SECOND))
+    val days = (christmasDays - TimeUnit.MILLISECONDS.toDays(calendar.timeInMillis)).toInt()
+    val hours= (23-calendar.get(Calendar.HOUR_OF_DAY))
+    val minutes = (60-calendar.get(Calendar.MINUTE))
+    val seconds = (60-calendar.get(Calendar.SECOND))
     return if( days==0){
         "Ya es navidad"
     }else{
