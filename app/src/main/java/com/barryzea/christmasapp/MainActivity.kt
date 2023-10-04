@@ -16,12 +16,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.barryzea.christmasapp.common.getDays
+import com.barryzea.christmasapp.ui.components.CountdownScreen
 import com.barryzea.christmasapp.ui.theme.ChristmasAppTheme
+import com.barryzea.christmasapp.ui.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -31,30 +35,19 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    CountdownScreen()
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically,
-        modifier=Modifier.padding(8.dp),) {
-        Text(
 
-            text = getDays(),
-            modifier = modifier,
-            textAlign = TextAlign.Center
-         )
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     ChristmasAppTheme {
-        Greeting("Android")
+
     }
 }
