@@ -1,6 +1,7 @@
 package com.barryzea.christmasapp.common
 
 import android.util.Log
+import com.barryzea.christmasapp.data.model.CountdownEntity
 
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
@@ -12,7 +13,8 @@ import java.util.concurrent.TimeUnit
  * Copyright (c)  All rights reserved.
  **/
  
-fun getDays():String{
+fun getDays():CountdownEntity{
+
     var calendar = Calendar.getInstance()
     var christmasYear = calendar.get(Calendar.YEAR)
 
@@ -33,8 +35,8 @@ fun getDays():String{
     val minutes = (60-calendar.get(Calendar.MINUTE))
     val seconds = (60-calendar.get(Calendar.SECOND))
     return if( days==0){
-        "Ya es navidad"
+       CountdownEntity()
     }else{
-        "Faltan $days  días $hours Horas $minutes minutos $seconds segundos para navidad"
+        CountdownEntity(days,hours,minutes,seconds)
     }
 }

@@ -1,6 +1,7 @@
 package com.barryzea.christmasapp.data.repository
 
 import com.barryzea.christmasapp.common.getDays
+import com.barryzea.christmasapp.data.model.CountdownEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +17,7 @@ import javax.inject.Inject
  **/
 
 class MainRepositoryImpl @Inject constructor() :MainRepository{
-    override suspend fun getChristmasCountdown(): Flow<String> {
+    override suspend fun getChristmasCountdown(): Flow<CountdownEntity> {
         return flow{
             while(true){
                 emit(getDays())

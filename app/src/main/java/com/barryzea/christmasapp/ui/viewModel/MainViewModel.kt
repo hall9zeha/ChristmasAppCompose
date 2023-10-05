@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.barryzea.christmasapp.data.model.CountdownEntity
 import com.barryzea.christmasapp.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
@@ -21,8 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository:MainRepository):ViewModel() {
 
-    private var _christmasCountdown:MutableLiveData<String> = MutableLiveData()
-    val christmasCountdown:LiveData<String> get() = _christmasCountdown
+    private var _christmasCountdown:MutableLiveData<CountdownEntity> = MutableLiveData()
+    val christmasCountdown:LiveData<CountdownEntity> get() = _christmasCountdown
 
     fun fetchChristmasCountdown(){
         viewModelScope.launch {

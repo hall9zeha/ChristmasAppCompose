@@ -1,5 +1,6 @@
 package com.barryzea.christmasapp.data.repository
 
+import com.barryzea.christmasapp.data.model.CountdownEntity
 import kotlinx.coroutines.flow.Flow
 
 
@@ -10,5 +11,5 @@ import kotlinx.coroutines.flow.Flow
  **/
 
 interface MainRepository {
-    suspend fun  getChristmasCountdown():Flow<String>
+    suspend fun  getChristmasCountdown():Flow<CountdownEntity>
 }
