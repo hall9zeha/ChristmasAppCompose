@@ -1,11 +1,13 @@
 package com.barryzea.christmasapp.ui.components
 
+import android.graphics.Paint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,6 +40,10 @@ import com.barryzea.christmasapp.R
 import com.barryzea.christmasapp.common.getFontProviders
 import com.barryzea.christmasapp.data.model.CountdownEntity
 import com.barryzea.christmasapp.ui.viewModel.MainViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 /**
@@ -46,9 +53,10 @@ import com.barryzea.christmasapp.ui.viewModel.MainViewModel
  **/
 
 private lateinit var fontFamily:FontFamily
+private lateinit var viewModel:MainViewModel
 @Composable
 fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
-
+    viewModel=mainViewModel
     //val christmasFont=GoogleFont("Mountains of Christmas")//El nombre de la fuente que queremos descargar
 
     //La configuramos para ponerla al elemento Texto posteriormente
@@ -64,7 +72,7 @@ fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
             FontWeight.W700
         )
     )
-    mainViewModel.fetchChristmasCountdown()
+    viewModel.fetchChristmasCountdown()
     val response by mainViewModel.christmasCountdown.observeAsState(CountdownEntity())
 
     Card(modifier = Modifier
@@ -79,7 +87,7 @@ fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                countdownBody(response = response!!)
+                  countdownBody(response = response!!)
 
             }
 
@@ -92,11 +100,61 @@ fun countdownBody(response: CountdownEntity, modifier: Modifier = Modifier
     .fillMaxWidth()) {
    if(!response.itsChristmas){
        itsNotChristmasYet(response = response, modifier =modifier)
+   }else{
+        viewModel.job.cancel()
+       itsChristmas()
    }
 }
 
+@Preview(
+    showBackground = true,
+    showSystemUi = true
+)
+@Composable
+fun itsChristmas(){
+    Column(modifier= Modifier
+        .layoutId("contentMainIsChristmas")
+        .fillMaxWidth()
+        .fillMaxHeight(),
+        horizontalAlignment=Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+        ){
+        Text(
+            modifier=Modifier.layoutId("tvMerrychristmas"),
+            text = "Feliz Navidad",
+            fontSize = 46.sp,
+            textAlign= TextAlign.Center,
+            //fontFamily= fontFamily,
+            color = Color(0xff323232),
+        )
+        Image(painterResource(id = R.drawable.christmas_celebration),
+            contentDescription = "",
+
+            modifier= Modifier
+                .layoutId("ivCelebrateChristmas")
+                .height(260.dp)
+                .width(260.dp))
+        Text(
+            modifier=Modifier.layoutId("tvEnjoyit"),
+            text = "Disfrútalo",
+            fontSize = 46.sp,
+            textAlign= TextAlign.Center,
+            //fontFamily= fontFamily,
+            color = Color(0xff323232),
+        )
+    }
+}
 @Composable
 fun itsNotChristmasYet(response:CountdownEntity, modifier:Modifier){
+    Row(modifier = Modifier.layoutId("headerRow"),
+        horizontalArrangement = Arrangement.Center){
+        Text(text = "Faltan",
+            modifier=Modifier.layoutId("tvHeader"),
+            color = Color(0xff323232),
+            fontSize = 34.sp,
+            textAlign= TextAlign.Center
+            )
+    }
     Box(modifier = Modifier
         .layoutId("contentMain")
         .height(260.dp)
@@ -115,7 +173,7 @@ fun itsNotChristmasYet(response:CountdownEntity, modifier:Modifier){
                 modifier = modifier.layoutId("tvDays"),
                 color = Color(0xff323232),
                 fontSize = 34.sp,
-                fontFamily = fontFamily,
+                //fontFamily = fontFamily,
                 textAlign = TextAlign.Center
             )
             Text(
@@ -124,64 +182,68 @@ fun itsNotChristmasYet(response:CountdownEntity, modifier:Modifier){
                     .layoutId("tvDaysDesc")
                     .padding(0.dp, 0.dp, 0.dp, 8.dp),
                 color = Color(0xff323232),
-                fontFamily = fontFamily,
+                //fontFamily = fontFamily,
                 textAlign = TextAlign.Center
             )
         }
     }
-    Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically,
-        modifier= Modifier
-            .height(80.dp)
+    Surface(shadowElevation = 2.dp) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .height(80.dp)
+                .background(color = Color(0xFFF05454))
+        ) {
 
-            .background(color = Color(0xFFF05454)),) {
-
-        Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = response.hour.toString(),
-                modifier = modifier.layoutId("tvHours"),
-                color= Color(0xffffffff),
-                fontSize=34.sp,
-                fontFamily=fontFamily,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text= stringResource(R.string.hour),
-                modifier=Modifier.layoutId("tvHoursDesc"),
-                fontFamily=fontFamily,
-                color= Color(0xffffffff),
-            )
-        }
-        Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = response.minute.toString(),
-                modifier = modifier.layoutId("tvMinutes"),
-                color= Color(0xffffffff),
-                fontSize=34.sp,
-                fontFamily=fontFamily,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text= stringResource(R.string.minutes),
-                modifier=Modifier.layoutId("tvMinutesDesc"),
-                fontFamily=fontFamily,
-                color= Color(0xffffffff),
-            )
-        }
-        Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                text = response.second.toString(),
-                modifier = modifier.layoutId("tvSeconds"),
-                color= Color(0xffffffff),
-                fontSize=34.sp,
-                fontFamily=fontFamily,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text= stringResource(R.string.seconds),
-                modifier=Modifier.layoutId("tvSecondsDesc"),
-                fontFamily=fontFamily,
-                color= Color(0xffffffff),
-            )
+            Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = response.hour.toString(),
+                    modifier = modifier.layoutId("tvHours"),
+                    color = Color(0xffffffff),
+                    fontSize = 34.sp,
+                    //fontFamily=fontFamily,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = stringResource(R.string.hour),
+                    modifier = Modifier.layoutId("tvHoursDesc"),
+                    //fontFamily=fontFamily,
+                    color = Color(0xffffffff),
+                )
+            }
+            Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = response.minute.toString(),
+                    modifier = modifier.layoutId("tvMinutes"),
+                    color = Color(0xffffffff),
+                    fontSize = 34.sp,
+                    //fontFamily=fontFamily,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = stringResource(R.string.minutes),
+                    modifier = Modifier.layoutId("tvMinutesDesc"),
+                    //fontFamily=fontFamily,
+                    color = Color(0xffffffff),
+                )
+            }
+            Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = response.second.toString(),
+                    modifier = modifier.layoutId("tvSeconds"),
+                    color = Color(0xffffffff),
+                    fontSize = 34.sp,
+                    //fontFamily=fontFamily,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = stringResource(R.string.seconds),
+                    modifier = Modifier.layoutId("tvSecondsDesc"),
+                    //fontFamily=fontFamily,
+                    color = Color(0xffffffff),
+                )
+            }
         }
     }
 }

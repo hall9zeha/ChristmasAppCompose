@@ -64,7 +64,7 @@ fun ChristmasAppTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = christmasTypography,
         content = content
     )
 }

@@ -20,17 +20,16 @@ fun getDays():CountdownEntity{
 
     var setupChristmas= Calendar.getInstance()
     setupChristmas.set(christmasYear,11,25)
-
-    var christmasDays =TimeUnit.MILLISECONDS.toDays(setupChristmas.timeInMillis)
+    //Si ya se pasó de la fecha esperada, reajustamos el calendario
     if(Calendar.getInstance().timeInMillis > setupChristmas.timeInMillis){
         val cal = Calendar.getInstance()
         cal.add(Calendar.YEAR,1)
         christmasYear = cal.get(Calendar.YEAR)
-        Log.e("christmasYear + 1", christmasYear.toString())
-        setupChristmas.set(christmasYear,12,25)
+        setupChristmas.set(christmasYear,11,25)
     }
-
+    var christmasDays =TimeUnit.MILLISECONDS.toDays(setupChristmas.timeInMillis)
     val days = (christmasDays - TimeUnit.MILLISECONDS.toDays(calendar.timeInMillis)).toInt()
+
     val hours= (23-calendar.get(Calendar.HOUR_OF_DAY))
     val minutes = (60-calendar.get(Calendar.MINUTE))
     val seconds = (60-calendar.get(Calendar.SECOND))
