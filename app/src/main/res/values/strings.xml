@@ -3,4 +3,5 @@
     <string name="minutes">Minutos</string>
     <string name="hour">Horas</string>
     <string name="seconds">Segundos</string>
+    <string name="days">Días</string>
 </resources>
