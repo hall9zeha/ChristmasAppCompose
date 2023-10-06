@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,31 +49,54 @@ private lateinit var fontFamily:FontFamily
 @Composable
 fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
 
-    val christmasFont=GoogleFont("Mountains of Christmas")
-    fontFamily = FontFamily(Font(googleFont=christmasFont,
+    //val christmasFont=GoogleFont("Mountains of Christmas")//El nombre de la fuente que queremos descargar
+
+    //La configuramos para ponerla al elemento Texto posteriormente
+    /*fontFamily = FontFamily(Font(googleFont=christmasFont,
         fontProvider=getFontProviders(),
         weight = FontWeight.W700
-    ))
+    ))*/
+
+    //ahora lo haremos usando archivos de fuente cargados al proyecto
+    fontFamily = FontFamily(
+        androidx.compose.ui.text.font.Font(
+            R.font.mountains_of_christmas_bold,
+            FontWeight.W700
+        )
+    )
     mainViewModel.fetchChristmasCountdown()
     val response by mainViewModel.christmasCountdown.observeAsState(CountdownEntity())
-    Box (modifier= Modifier
+
+    Card(modifier = Modifier
         .fillMaxSize()
         .padding(8.dp),
+        elevation =CardDefaults.cardElevation( defaultElevation = 4.dp),
+        shape= RoundedCornerShape(16.dp)
+    ) {
+        Box() {
+            Column(
+                Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                countdownBody(response = response!!)
 
-    ){
-        Column(Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center) {
-            Greeting(response = response!!)
+            }
 
         }
-
     }
 }
 
 @Composable
-fun Greeting(response: CountdownEntity, modifier: Modifier = Modifier
+fun countdownBody(response: CountdownEntity, modifier: Modifier = Modifier
     .fillMaxWidth()) {
+   if(!response.itsChristmas){
+       itsNotChristmasYet(response = response, modifier =modifier)
+   }
+}
+
+@Composable
+fun itsNotChristmasYet(response:CountdownEntity, modifier:Modifier){
     Box(modifier = Modifier
         .layoutId("contentMain")
         .height(260.dp)
@@ -82,7 +108,7 @@ fun Greeting(response: CountdownEntity, modifier: Modifier = Modifier
                 .layoutId("wreathImg")
                 .height(260.dp)
                 .width(260.dp)
-           )
+        )
         Column(Modifier.padding(0.dp)) {
             Text(
                 text = response.day.toString(),
@@ -94,7 +120,9 @@ fun Greeting(response: CountdownEntity, modifier: Modifier = Modifier
             )
             Text(
                 text = stringResource(R.string.days),
-                modifier = modifier.layoutId("tvDaysDesc").padding(0.dp,0.dp,0.dp,8.dp),
+                modifier = modifier
+                    .layoutId("tvDaysDesc")
+                    .padding(0.dp, 0.dp, 0.dp, 8.dp),
                 color = Color(0xff323232),
                 fontFamily = fontFamily,
                 textAlign = TextAlign.Center
@@ -103,8 +131,8 @@ fun Greeting(response: CountdownEntity, modifier: Modifier = Modifier
     }
     Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically,
         modifier= Modifier
-            .padding(4.dp)
             .height(80.dp)
+
             .background(color = Color(0xFFF05454)),) {
 
         Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -163,5 +191,5 @@ fun Greeting(response: CountdownEntity, modifier: Modifier = Modifier
 )
 @Composable
 fun prev(){
-    Greeting(response = CountdownEntity())
+    countdownBody(response = CountdownEntity())
 }

@@ -7,4 +7,8 @@ package com.barryzea.christmasapp.data.model
  * Copyright (c)  All rights reserved.
  **/
 
-data class CountdownEntity (val day:Int=0,val hour:Int=0, val minute:Int=0, val second:Int=0)
+data class CountdownEntity (val day:Int=0,
+                            val hour:Int=0,
+                            val minute:Int=0,
+                            val second:Int=0,
+                            val itsChristmas:Boolean=false)

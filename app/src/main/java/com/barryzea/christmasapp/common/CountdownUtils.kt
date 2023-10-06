@@ -35,7 +35,7 @@ fun getDays():CountdownEntity{
     val minutes = (60-calendar.get(Calendar.MINUTE))
     val seconds = (60-calendar.get(Calendar.SECOND))
     return if( days==0){
-       CountdownEntity()
+       CountdownEntity(itsChristmas = true)
     }else{
         CountdownEntity(days,hours,minutes,seconds)
     }
