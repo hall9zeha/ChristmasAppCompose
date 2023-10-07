@@ -69,7 +69,6 @@ fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
             FontWeight.W700
         )
     )
-
     viewModel.fetchChristmasCountdown()
     val response by mainViewModel.christmasCountdown.observeAsState(CountdownEntity())
 
@@ -129,7 +128,7 @@ fun ItsChristmas(){
             text = stringResource(R.string.merryChristmas),
             fontSize = 46.sp,
             textAlign= TextAlign.Center,
-            //fontFamily= fontFamily,
+
             color = Color(0xff323232),
         )
         Image(painterResource(id = R.drawable.christmas_celebration),
@@ -144,7 +143,7 @@ fun ItsChristmas(){
             text = stringResource(R.string.enjoyIt),
             fontSize = 46.sp,
             textAlign= TextAlign.Center,
-            //fontFamily= fontFamily,
+
             color = Color(0xff323232),
         )
     }
@@ -177,7 +176,6 @@ fun ItsNotChristmasYet(response:CountdownEntity, modifier:Modifier){
             Column(Modifier.padding(0.dp)) {
                 GenericTextView("tvDays",msgText = response.day.toString(), Color(0xff323232),34.sp,modifier =modifier )
                 GenericTextView("tvDaysDesc",msgText = stringResource(id = R.string.days), Color(0xff323232),16.sp,modifier =modifier )
-               
             }
         }
         // Surface(shadowElevation = 2.dp) {
@@ -214,16 +212,14 @@ fun GenericTextView(idLayout:String, msgText:String, color: Color,size:TextUnit,
         modifier = modifier.layoutId(idLayout),
         color = color,
         fontSize = size,
-        //fontFamily=fontFamily,
+
         textAlign = TextAlign.Center
     )
-   
-}
+   }
 @Preview(
     showBackground = true,
     showSystemUi = true
 )
-
 @Composable
 fun prev(){
     ItsNotChristmasYet(CountdownEntity(), Modifier)
