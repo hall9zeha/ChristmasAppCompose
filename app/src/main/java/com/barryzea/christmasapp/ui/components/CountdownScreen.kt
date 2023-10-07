@@ -1,6 +1,5 @@
 package com.barryzea.christmasapp.ui.components
 
-import android.graphics.Paint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,37 +12,35 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ComposeCompilerApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.googlefonts.Font
-import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.barryzea.christmasapp.R
-import com.barryzea.christmasapp.common.getFontProviders
 import com.barryzea.christmasapp.data.model.CountdownEntity
 import com.barryzea.christmasapp.ui.viewModel.MainViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 /**
@@ -72,6 +69,7 @@ fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
             FontWeight.W700
         )
     )
+
     viewModel.fetchChristmasCountdown()
     val response by mainViewModel.christmasCountdown.observeAsState(CountdownEntity())
 
@@ -81,28 +79,35 @@ fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
         elevation =CardDefaults.cardElevation( defaultElevation = 4.dp),
         shape= RoundedCornerShape(16.dp)
     ) {
-        Box() {
+        Box {
+            ChristmasBell()
             Column(
                 Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                  countdownBody(response = response!!)
-
+                CountdownBody(response = response!!)
             }
 
         }
     }
+}@Composable
+fun ChristmasBell(){
+    Row {
+        Image(painter = painterResource(id = R.drawable.bell_icons), contentDescription ="",
+            modifier= Modifier
+                .width(80.dp)
+                .height(80.dp))
+    }
 }
-
 @Composable
-fun countdownBody(response: CountdownEntity, modifier: Modifier = Modifier
+fun CountdownBody(response: CountdownEntity, modifier: Modifier = Modifier
     .fillMaxWidth()) {
    if(!response.itsChristmas){
-       itsNotChristmasYet(response = response, modifier =modifier)
+       ItsNotChristmasYet(response = response, modifier =modifier)
    }else{
         viewModel.job.cancel()
-       itsChristmas()
+       ItsChristmas()
    }
 }
 
@@ -111,7 +116,7 @@ fun countdownBody(response: CountdownEntity, modifier: Modifier = Modifier
     showSystemUi = true
 )
 @Composable
-fun itsChristmas(){
+fun ItsChristmas(){
     Column(modifier= Modifier
         .layoutId("contentMainIsChristmas")
         .fillMaxWidth()
@@ -120,8 +125,8 @@ fun itsChristmas(){
         verticalArrangement = Arrangement.Center
         ){
         Text(
-            modifier=Modifier.layoutId("tvMerrychristmas"),
-            text = "Feliz Navidad",
+            modifier=Modifier.layoutId("tvMerryChristmas"),
+            text = stringResource(R.string.merryChristmas),
             fontSize = 46.sp,
             textAlign= TextAlign.Center,
             //fontFamily= fontFamily,
@@ -135,8 +140,8 @@ fun itsChristmas(){
                 .height(260.dp)
                 .width(260.dp))
         Text(
-            modifier=Modifier.layoutId("tvEnjoyit"),
-            text = "Disfrútalo",
+            modifier=Modifier.layoutId("tvEnjoyIt"),
+            text = stringResource(R.string.enjoyIt),
             fontSize = 46.sp,
             textAlign= TextAlign.Center,
             //fontFamily= fontFamily,
@@ -145,113 +150,81 @@ fun itsChristmas(){
     }
 }
 @Composable
-fun itsNotChristmasYet(response:CountdownEntity, modifier:Modifier){
-    Row(modifier = Modifier.layoutId("headerRow"),
-        horizontalArrangement = Arrangement.Center){
-        Text(text = "Faltan",
-            modifier=Modifier.layoutId("tvHeader"),
-            color = Color(0xff323232),
-            fontSize = 34.sp,
-            textAlign= TextAlign.Center
-            )
-    }
-    Box(modifier = Modifier
-        .layoutId("contentMain")
-        .height(260.dp)
-        .width(260.dp),
-        contentAlignment =  Alignment.Center){
-        Image( painterResource(id = R.drawable.christmas_wreath),
-            contentDescription="",
-            modifier= Modifier
-                .layoutId("wreathImg")
-                .height(260.dp)
-                .width(260.dp)
-        )
-        Column(Modifier.padding(0.dp)) {
-            Text(
-                text = response.day.toString(),
-                modifier = modifier.layoutId("tvDays"),
-                color = Color(0xff323232),
-                fontSize = 34.sp,
-                //fontFamily = fontFamily,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = stringResource(R.string.days),
-                modifier = modifier
-                    .layoutId("tvDaysDesc")
-                    .padding(0.dp, 0.dp, 0.dp, 8.dp),
-                color = Color(0xff323232),
-                //fontFamily = fontFamily,
-                textAlign = TextAlign.Center
-            )
+fun ItsNotChristmasYet(response:CountdownEntity, modifier:Modifier){
+    Column (verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+        Row(
+            modifier = Modifier.layoutId("headerRow"),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            GenericTextView("tvStill",msgText = stringResource(R.string.still), Color(0xff323232),34.sp,modifier =modifier )
+
         }
-    }
-    Surface(shadowElevation = 2.dp) {
+        Box(
+            modifier = Modifier
+                .layoutId("contentMain")
+                .height(260.dp)
+                .width(260.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painterResource(id = R.drawable.christmas_wreath),
+                contentDescription = "",
+                modifier = Modifier
+                    .layoutId("wreathImg")
+                    .height(260.dp)
+                    .width(260.dp)
+            )
+            Column(Modifier.padding(0.dp)) {
+                GenericTextView("tvDays",msgText = response.day.toString(), Color(0xff323232),34.sp,modifier =modifier )
+                GenericTextView("tvDaysDesc",msgText = stringResource(id = R.string.days), Color(0xff323232),16.sp,modifier =modifier )
+               
+            }
+        }
+        // Surface(shadowElevation = 2.dp) {
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .height(80.dp)
+                .shadow(2.dp)
+                // .height(80.dp)
+                .wrapContentHeight()
                 .background(color = Color(0xFFF05454))
         ) {
 
             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = response.hour.toString(),
-                    modifier = modifier.layoutId("tvHours"),
-                    color = Color(0xffffffff),
-                    fontSize = 34.sp,
-                    //fontFamily=fontFamily,
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    text = stringResource(R.string.hour),
-                    modifier = Modifier.layoutId("tvHoursDesc"),
-                    //fontFamily=fontFamily,
-                    color = Color(0xffffffff),
-                )
+                GenericTextView("tvHours",msgText = response.hour.toString(),Color.White,34.sp,modifier =modifier )
+                GenericTextView("tvHoursDesc",msgText = stringResource(id = R.string.hour),Color.White,16.sp,modifier =modifier )
             }
             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = response.minute.toString(),
-                    modifier = modifier.layoutId("tvMinutes"),
-                    color = Color(0xffffffff),
-                    fontSize = 34.sp,
-                    //fontFamily=fontFamily,
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    text = stringResource(R.string.minutes),
-                    modifier = Modifier.layoutId("tvMinutesDesc"),
-                    //fontFamily=fontFamily,
-                    color = Color(0xffffffff),
-                )
+                GenericTextView("tvMinutes",msgText = response.minute.toString(),Color.White,34.sp,modifier =modifier )
+                GenericTextView("tvMinuteDesc",msgText = stringResource(id = R.string.minutes),Color.White,16.sp,modifier =modifier )
             }
             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = response.second.toString(),
-                    modifier = modifier.layoutId("tvSeconds"),
-                    color = Color(0xffffffff),
-                    fontSize = 34.sp,
-                    //fontFamily=fontFamily,
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    text = stringResource(R.string.seconds),
-                    modifier = Modifier.layoutId("tvSecondsDesc"),
-                    //fontFamily=fontFamily,
-                    color = Color(0xffffffff),
-                )
-            }
+                GenericTextView("tvSecond",msgText = response.second.toString(),Color.White,34.sp,modifier =modifier )
+                GenericTextView("tvSecondDesc",msgText = stringResource(id = R.string.seconds),Color.White,16.sp,modifier =modifier )
+           }
         }
+        //}
     }
+}
+@Composable
+fun GenericTextView(idLayout:String, msgText:String, color: Color,size:TextUnit, modifier: Modifier){
+    Text(
+        text = msgText,
+        modifier = modifier.layoutId(idLayout),
+        color = color,
+        fontSize = size,
+        //fontFamily=fontFamily,
+        textAlign = TextAlign.Center
+    )
+   
 }
 @Preview(
     showBackground = true,
     showSystemUi = true
 )
+
 @Composable
 fun prev(){
-    countdownBody(response = CountdownEntity())
+    ItsNotChristmasYet(CountdownEntity(), Modifier)
 }

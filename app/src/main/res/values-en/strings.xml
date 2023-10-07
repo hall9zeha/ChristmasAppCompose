@@ -5,4 +5,7 @@
     <string name="hour">Hours</string>
     <string name="seconds">Seconds</string>
     <string name="days">Días</string>
+    <string name="merryChristmas">Feliz Navidad</string>
+    <string name="enjoyIt">Disfrútalo</string>
+    <string name="still">Faltan</string>
 </resources>
