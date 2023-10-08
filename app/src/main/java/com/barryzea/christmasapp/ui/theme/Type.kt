@@ -33,6 +33,7 @@ val Typography = Typography(
     )
     */
 )
+//Tipografía personalizada para toda la aplicación
 val christmasTypography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily(

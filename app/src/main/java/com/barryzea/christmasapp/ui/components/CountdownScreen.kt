@@ -1,5 +1,6 @@
 package com.barryzea.christmasapp.ui.components
 
+import android.graphics.Paint.Align
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ComposeCompilerApi
@@ -71,12 +73,12 @@ fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
     ))*/
 
     //ahora lo haremos usando archivos de fuente cargados al proyecto
-    fontFamily = FontFamily(
+    /*fontFamily = FontFamily(
         androidx.compose.ui.text.font.Font(
             R.font.mountains_of_christmas_bold,
             FontWeight.W700
         )
-    )
+    )*/
     viewModel.fetchChristmasCountdown()
     val response by mainViewModel.christmasCountdown.observeAsState(CountdownEntity())
 
@@ -95,8 +97,8 @@ fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
             ) {
                 CountdownBody(response = response!!)
             }
-
         }
+
     }
 }@Composable
 fun ChristmasBell(){
@@ -104,7 +106,7 @@ fun ChristmasBell(){
         AnimationLottieView(animRes = LottieCompositionSpec.RawRes(R.raw.bells_anim_4),
             idLayout = "lottieViewMiniSanta" , 100.dp ,100.dp )
         AnimationLottieView(animRes = LottieCompositionSpec.RawRes(R.raw.lottie_anim_2),
-            idLayout ="lottieViewGits",160.dp,160.dp )
+            idLayout ="lottieViewGift",160.dp,160.dp )
     }
 }
 @Composable

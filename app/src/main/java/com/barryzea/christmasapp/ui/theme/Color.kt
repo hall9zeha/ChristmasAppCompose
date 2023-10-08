@@ -14,6 +14,7 @@ val Pink40 = Color(0xFF7D5260)
 val greenSoft = Color(0xE87ABB7A)
 val salmonRed = Color(0xFFF05454)
 val salmonRedSoft = Color(0xFFEE9595)
+val white=Color.White
 
 //custom dark theme colors
 
