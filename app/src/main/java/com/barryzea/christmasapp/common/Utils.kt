@@ -10,6 +10,9 @@ import com.barryzea.christmasapp.R
  * Copyright (c)  All rights reserved.
  **/
 
+/*
+* Ya que tenemos la tipografía de forma global en temas esta función ya no se utiliza
+* */
 fun getFontProviders():GoogleFont.Provider{
     return GoogleFont.Provider(
         providerAuthority = "com.google.android.gms.fonts",

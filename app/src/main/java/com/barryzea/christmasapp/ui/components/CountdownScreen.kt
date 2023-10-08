@@ -4,7 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,10 +36,16 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.barryzea.christmasapp.R
 import com.barryzea.christmasapp.data.model.CountdownEntity
 import com.barryzea.christmasapp.ui.viewModel.MainViewModel
@@ -92,11 +100,11 @@ fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
     }
 }@Composable
 fun ChristmasBell(){
-    Row {
-        Image(painter = painterResource(id = R.drawable.bell_icons), contentDescription ="",
-            modifier= Modifier
-                .width(80.dp)
-                .height(80.dp))
+    Row (horizontalArrangement = Arrangement.SpaceBetween,modifier=Modifier.fillMaxWidth()){
+        AnimationLottieView(animRes = LottieCompositionSpec.RawRes(R.raw.bells_anim_4),
+            idLayout = "lottieViewMiniSanta" , 100.dp ,100.dp )
+        AnimationLottieView(animRes = LottieCompositionSpec.RawRes(R.raw.lottie_anim_2),
+            idLayout ="lottieViewGits",160.dp,160.dp )
     }
 }
 @Composable
@@ -106,8 +114,7 @@ fun CountdownBody(response: CountdownEntity, modifier: Modifier = Modifier
        ItsNotChristmasYet(response = response, modifier =modifier)
    }else{
         viewModel.job.cancel()
-       ItsChristmas()
-   }
+       ItsChristmas()  }
 }
 
 @Preview(
@@ -128,22 +135,15 @@ fun ItsChristmas(){
             text = stringResource(R.string.merryChristmas),
             fontSize = 46.sp,
             textAlign= TextAlign.Center,
-
             color = Color(0xff323232),
         )
-        Image(painterResource(id = R.drawable.christmas_celebration),
-            contentDescription = "",
-
-            modifier= Modifier
-                .layoutId("ivCelebrateChristmas")
-                .height(260.dp)
-                .width(260.dp))
+        AnimationLottieView(animRes = LottieCompositionSpec.RawRes(R.raw.lottie_anim_1),
+            idLayout = "lottieViewSanta",260.dp,260.dp )
         Text(
             modifier=Modifier.layoutId("tvEnjoyIt"),
             text = stringResource(R.string.enjoyIt),
             fontSize = 46.sp,
             textAlign= TextAlign.Center,
-
             color = Color(0xff323232),
         )
     }
@@ -206,13 +206,23 @@ fun ItsNotChristmasYet(response:CountdownEntity, modifier:Modifier){
     }
 }
 @Composable
+fun AnimationLottieView(animRes:LottieCompositionSpec, idLayout: String, height: Dp,width:Dp ){
+    val composition by rememberLottieComposition(spec = animRes)
+    val progress by animateLottieCompositionAsState(composition = composition, iterations=LottieConstants.IterateForever)
+    LottieAnimation(composition = composition,
+        progress = { progress },
+        modifier= Modifier
+            .layoutId(idLayout)
+            .height(height)
+            .width(width))
+}
+@Composable
 fun GenericTextView(idLayout:String, msgText:String, color: Color,size:TextUnit, modifier: Modifier){
     Text(
         text = msgText,
         modifier = modifier.layoutId(idLayout),
         color = color,
         fontSize = size,
-
         textAlign = TextAlign.Center
     )
    }

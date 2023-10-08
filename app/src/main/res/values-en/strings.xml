@@ -4,8 +4,8 @@
     <string name="minutes">Minutes</string>
     <string name="hour">Hours</string>
     <string name="seconds">Seconds</string>
-    <string name="days">Días</string>
-    <string name="merryChristmas">Feliz Navidad</string>
-    <string name="enjoyIt">Disfrútalo</string>
-    <string name="still">Faltan</string>
+    <string name="days">Days</string>
+    <string name="merryChristmas">It\'s Christmas already</string>
+    <string name="enjoyIt">Enjoy it</string>
+    <string name="still">Still</string>
 </resources>
