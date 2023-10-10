@@ -1,13 +1,11 @@
 package com.barryzea.christmasapp.ui.components
 
-import android.graphics.Paint.Align
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-
 import androidx.compose.foundation.layout.Column
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,23 +17,25 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ComposeCompilerApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -61,6 +61,7 @@ import com.barryzea.christmasapp.ui.viewModel.MainViewModel
 
 private lateinit var fontFamily:FontFamily
 private lateinit var viewModel:MainViewModel
+
 @Composable
 fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
     viewModel=mainViewModel
@@ -88,17 +89,19 @@ fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
         elevation =CardDefaults.cardElevation( defaultElevation = 4.dp),
         shape= RoundedCornerShape(16.dp)
     ) {
-        Box {
-            ChristmasBell()
-            Column(
-                Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                CountdownBody(response = response!!)
-            }
-        }
+      Scaffold(bottomBar =  {BottomNavigationBar()}) {
+          Box {
+              ChristmasBell()
+              Column(
+                  Modifier.fillMaxSize().padding(it),
+                  horizontalAlignment = Alignment.CenterHorizontally,
+                  verticalArrangement = Arrangement.Center
+              ) {
+                  CountdownBody(response = response!!)
+              }
 
+          }
+      }
     }
 }@Composable
 fun ChristmasBell(){
@@ -228,6 +231,29 @@ fun GenericTextView(idLayout:String, msgText:String, color: Color,size:TextUnit,
         textAlign = TextAlign.Center
     )
    }
+@Composable
+fun BottomNavigationBar(){
+    val screens = listOf("Home","Settings")
+    var selectedScreen by remember {mutableStateOf(screens.first())}
+    NavigationBar{
+        screens.forEach { screen->
+            NavigationBarItem(selected = screen ==selectedScreen,
+                modifier= Modifier.padding(8.dp),
+                onClick = {  },
+                icon ={Icon(painterResource(getIcoForScreen(screenName = screen)) ,contentDescription="")})
+
+        }
+    }
+
+}
+
+fun getIcoForScreen(screenName:String): Int {
+    return when(screenName){
+        "Home"-> R.drawable.ic_santa
+        "Settings" -> R.drawable.ic_snowflake
+        else -> R.drawable.ic_tree
+    }
+}
 @Preview(
     showBackground = true,
     showSystemUi = true
