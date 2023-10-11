@@ -82,26 +82,16 @@ fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
     )*/
     viewModel.fetchChristmasCountdown()
     val response by mainViewModel.christmasCountdown.observeAsState(CountdownEntity())
-
-    Card(modifier = Modifier
-        .fillMaxSize()
-        .padding(8.dp),
-        elevation =CardDefaults.cardElevation( defaultElevation = 4.dp),
-        shape= RoundedCornerShape(16.dp)
-    ) {
-      Scaffold(bottomBar =  {BottomNavigationBar()}) {
           Box {
               ChristmasBell()
               Column(
-                  Modifier.fillMaxSize().padding(it),
+                  Modifier.fillMaxSize(),//.padding(it),
                   horizontalAlignment = Alignment.CenterHorizontally,
                   verticalArrangement = Arrangement.Center
               ) {
                   CountdownBody(response = response!!)
               }
 
-          }
-      }
     }
 }@Composable
 fun ChristmasBell(){
@@ -231,29 +221,7 @@ fun GenericTextView(idLayout:String, msgText:String, color: Color,size:TextUnit,
         textAlign = TextAlign.Center
     )
    }
-@Composable
-fun BottomNavigationBar(){
-    val screens = listOf("Home","Settings")
-    var selectedScreen by remember {mutableStateOf(screens.first())}
-    NavigationBar{
-        screens.forEach { screen->
-            NavigationBarItem(selected = screen ==selectedScreen,
-                modifier= Modifier.padding(8.dp),
-                onClick = {  },
-                icon ={Icon(painterResource(getIcoForScreen(screenName = screen)) ,contentDescription="")})
 
-        }
-    }
-
-}
-
-fun getIcoForScreen(screenName:String): Int {
-    return when(screenName){
-        "Home"-> R.drawable.ic_santa
-        "Settings" -> R.drawable.ic_snowflake
-        else -> R.drawable.ic_tree
-    }
-}
 @Preview(
     showBackground = true,
     showSystemUi = true
