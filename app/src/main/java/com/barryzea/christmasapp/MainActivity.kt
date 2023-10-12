@@ -3,10 +3,13 @@ package com.barryzea.christmasapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -17,14 +20,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.widget.NestedScrollView
+
+
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -39,12 +42,13 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-private  var navController: NavHostController?=null
+    private  var navController: NavHostController?=null
+    private  lateinit var scrollState:ScrollState
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             navController= rememberNavController()
+            scrollState = rememberScrollState()
             ChristmasAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -58,13 +62,16 @@ private  var navController: NavHostController?=null
                         elevation = CardDefaults.cardElevation( defaultElevation = 4.dp),
                         shape= RoundedCornerShape(16.dp)
                     ){
-                    Scaffold(
-                       bottomBar = { BottomNavigationBar(navController!!)}) {paddingValues->
-                        SetUpNavController()
+                    Scaffold(bottomBar = {
+                        if(scrollState.value==0) {
+                            BottomNavigationBar(navController!!)
+                        }
+                    }
+                       ) { paddingValues->
+                        SetUpNavController(scrollState)
                         //para evitar que el Scaffold se queje por no usar sus paddingValues usaremos lo siguiente
                         Column (modifier=Modifier.padding(paddingValues)){}
                         }
-
                     }
 
                 }
@@ -72,11 +79,10 @@ private  var navController: NavHostController?=null
         }
     }
     @Composable
-    fun SetUpNavController(){
-
+    fun SetUpNavController(scrollState: ScrollState){
         NavHost(navController = navController!!, startDestination = Routes.CountDownScreen.route){
-            composable(Routes.CountDownScreen.route){ CountdownScreen()}
-            composable(Routes.SettingsScreen.route){ SettingsScreen()}
+            composable(Routes.CountDownScreen.route){ CountdownScreen(scrollState = scrollState)}
+            composable(Routes.SettingsScreen.route){ SettingsScreen(scrollState)}
         }
     }
     @Composable
@@ -119,6 +125,5 @@ fun getIcoForScreen(screenName:String): Int {
 @Composable
 fun GreetingPreview() {
     ChristmasAppTheme {
-
     }
 }

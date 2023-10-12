@@ -1,6 +1,7 @@
 package com.barryzea.christmasapp.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +35,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.widget.NestedScrollView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -52,7 +57,7 @@ private lateinit var fontFamily:FontFamily
 private lateinit var viewModel:MainViewModel
 
 @Composable
-fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
+fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel(), scrollState:ScrollState){
     viewModel =mainViewModel
     //val christmasFont=GoogleFont("Mountains of Christmas")//El nombre de la fuente que queremos descargar
 
@@ -71,14 +76,17 @@ fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
     )*/
     viewModel.fetchChristmasCountdown()
     val response by mainViewModel.christmasCountdown.observeAsState(CountdownEntity())
-          Box {
-              ChristmasBell()
+    Box {
+            ChristmasBell()
               Column(
-                  Modifier.fillMaxSize(),//.padding(it),
+                  Modifier
+                      .fillMaxSize()
+                      .verticalScroll(scrollState),
                   horizontalAlignment = Alignment.CenterHorizontally,
-                  verticalArrangement = Arrangement.Center
+                  verticalArrangement = Arrangement.Center,
+
               ) {
-                  CountdownBody(response = response!!)
+                 CountdownBody(response = response!!)
               }
 
     }
@@ -134,7 +142,8 @@ fun ItsChristmas(){
 }
 @Composable
 fun ItsNotChristmasYet(response:CountdownEntity, modifier:Modifier){
-    Column (verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
+    Column (verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally){
         Row(
             modifier = Modifier.layoutId("headerRow"),
             horizontalArrangement = Arrangement.Center

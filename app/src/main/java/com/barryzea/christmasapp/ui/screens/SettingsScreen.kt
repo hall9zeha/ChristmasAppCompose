@@ -1,5 +1,6 @@
 package com.barryzea.christmasapp.ui.screens
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,12 +21,9 @@ import androidx.compose.ui.unit.sp
  * Copyright (c)  All rights reserved.
  **/
 
-@Preview(
-    showSystemUi = true,
-    showBackground = true
-)
+
 @Composable
-fun SettingsScreen(){
+fun SettingsScreen(scrollState: ScrollState){
     Box (Modifier.fillMaxSize()){
         Column (Modifier.fillMaxSize(),verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally){
             Text(text = "Pantalla de Configuración",
