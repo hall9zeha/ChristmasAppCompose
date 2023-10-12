@@ -44,4 +44,16 @@ val christmasTypography = Typography(
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
-))
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = FontFamily(
+            androidx.compose.ui.text.font.Font(
+                R.font.mountains_of_christmas_bold,
+                FontWeight.W700
+            )),
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.5.sp
+    ),
+
+)

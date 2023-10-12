@@ -82,7 +82,7 @@ class MainActivity : ComponentActivity() {
     fun SetUpNavController(scrollState: ScrollState){
         NavHost(navController = navController!!, startDestination = Routes.CountDownScreen.route){
             composable(Routes.CountDownScreen.route){ CountdownScreen(scrollState = scrollState)}
-            composable(Routes.SettingsScreen.route){ SettingsScreen(scrollState)}
+            composable(Routes.SettingsScreen.route){ SettingsScreen(scrollState = scrollState)}
         }
     }
     @Composable
@@ -106,7 +106,6 @@ class MainActivity : ComponentActivity() {
                     }
                               },
                     icon ={ Icon(painterResource(getIcoForScreen(screenName = screen)) ,contentDescription="") })
-
             }
         }
 
