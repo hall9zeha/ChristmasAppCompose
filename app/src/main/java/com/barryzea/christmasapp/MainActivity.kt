@@ -1,6 +1,7 @@
 package com.barryzea.christmasapp
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ScrollState
@@ -19,13 +20,16 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.widget.NestedScrollView
+import androidx.datastore.dataStore
 
 
 import androidx.navigation.NavController
@@ -35,13 +39,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.barryzea.christmasapp.common.Routes
+import com.barryzea.christmasapp.common.SettingsStore
+import com.barryzea.christmasapp.data.model.PrefsEntity
 import com.barryzea.christmasapp.ui.screens.CountdownScreen
 import com.barryzea.christmasapp.ui.screens.SettingsScreen
 import com.barryzea.christmasapp.ui.theme.ChristmasAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.Flow
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit  var dataStore: SettingsStore
+
     private  var navController: NavHostController?=null
     private  lateinit var scrollState:ScrollState
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,8 +84,10 @@ class MainActivity : ComponentActivity() {
                         Column (modifier=Modifier.padding(paddingValues)){}
                         }
                     }
-
+                   // val value=dataStore.getFromDataStore().collectAsState(PrefsEntity(false)).value.darkTheme
+                   //Toast.makeText(LocalContext.current, value.toString(), Toast.LENGTH_SHORT).show()
                 }
+
             }
         }
     }
@@ -82,7 +95,7 @@ class MainActivity : ComponentActivity() {
     fun SetUpNavController(scrollState: ScrollState){
         NavHost(navController = navController!!, startDestination = Routes.CountDownScreen.route){
             composable(Routes.CountDownScreen.route){ CountdownScreen(scrollState = scrollState)}
-            composable(Routes.SettingsScreen.route){ SettingsScreen(scrollState = scrollState)}
+            composable(Routes.SettingsScreen.route){ SettingsScreen(scrollState = scrollState, dataStore = dataStore)}
         }
     }
     @Composable

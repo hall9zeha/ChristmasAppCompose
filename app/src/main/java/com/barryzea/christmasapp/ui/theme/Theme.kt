@@ -18,15 +18,16 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = blackHard,
+    secondary = blackSoft,
+    tertiary = accentColorCustom,
+    surface = Color(0xff313131)
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = greenSoft,
     secondary = salmonRed,
-    tertiary = salmonRedSoft
+    tertiary = salmonRedSoft,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -65,7 +66,6 @@ fun ChristmasAppTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
-
     MaterialTheme(
         colorScheme = colorScheme,
         typography = christmasTypography,

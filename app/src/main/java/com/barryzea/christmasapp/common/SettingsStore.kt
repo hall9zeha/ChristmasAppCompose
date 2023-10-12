@@ -1,0 +1,38 @@
+package com.barryzea.christmasapp.common
+
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
+import com.barryzea.christmasapp.data.model.PrefsEntity
+import kotlinx.coroutines.flow.map
+import javax.inject.Inject
+
+
+/**
+ * Project ChristmasApp
+ * Created by Barry Zea H. on 12/10/23.
+ * Copyright (c)  All rights reserved.
+ **/
+
+const val SETTINGS_DATASTORE = "settings_datastore"
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name= SETTINGS_DATASTORE)
+class SettingsStore @Inject constructor(private val context:Context) {
+ companion object{
+   val NIGHT_MODE = booleanPreferencesKey("NIGHT_MODE")
+ }
+ suspend fun saveToDataStore(prefsEntity:PrefsEntity){
+  context.dataStore.edit {
+   it[NIGHT_MODE] = prefsEntity.darkTheme!!
+  }
+ }
+ fun getFromDataStore() = context.dataStore.data.map{
+   PrefsEntity(darkTheme = it[NIGHT_MODE]?:false)
+ }
+ suspend fun clearDataStore()=context.dataStore.edit{
+  it.clear()
+ }
+
+}

@@ -1,11 +1,15 @@
 package com.barryzea.christmasapp.di
 
+import android.app.Application
+import android.content.Context
 import com.barryzea.christmasapp.data.repository.MainRepository
 import com.barryzea.christmasapp.data.repository.MainRepositoryImpl
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 
 /**
@@ -14,8 +18,14 @@ import dagger.hilt.components.SingletonComponent
  * Copyright (c)  All rights reserved.
  **/
 
+@Module
+@InstallIn(SingletonComponent::class)
 class AppModule {
+  @Singleton
+  @Provides
+  fun contextProvides(app:Application):Context = app.applicationContext
 }
+
 @Module
 @InstallIn(SingletonComponent::class)
 abstract  class RepoModule{

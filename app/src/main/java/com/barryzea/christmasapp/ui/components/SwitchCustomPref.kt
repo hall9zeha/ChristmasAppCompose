@@ -42,7 +42,7 @@ fun SwitchCustomPref(
     @DrawableRes icon:Int,
     @StringRes iconDesc:Int,
     @StringRes name:Int,
-    state:State<Boolean>,
+    state: State<Boolean?>,
     onClick:()->Unit
 ){
     Surface(color= Color.Transparent,
@@ -64,20 +64,22 @@ fun SwitchCustomPref(
                         textAlign= TextAlign.Start)
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                Switch(checked = state.value, onCheckedChange ={onClick()} )
+                Switch(checked = state.value!!, onCheckedChange ={onClick()} )
             }
             Divider()
         }
     }
 
 }
+
 @Preview(
     showSystemUi = true,
     showBackground = true
 )
 @Composable
 fun previewSwitch(){
-    SwitchCustomPref(icon = R.drawable.ic_tree,
+    SwitchCustomPref(
+        icon = R.drawable.ic_tree,
         iconDesc =R.string.app_name ,
         name =R.string.nightMode , state = MutableStateFlow(false).collectAsState()) {
 

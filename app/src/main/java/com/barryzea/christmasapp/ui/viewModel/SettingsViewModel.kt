@@ -1,9 +1,15 @@
 package com.barryzea.christmasapp.ui.viewModel
 
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.barryzea.christmasapp.common.SettingsStore
+import com.barryzea.christmasapp.data.model.PrefsEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -14,11 +20,12 @@ import javax.inject.Inject
  **/
 @HiltViewModel
 class SettingsViewModel @Inject constructor():ViewModel() {
+
   private val _isSwitchOn:MutableStateFlow<Boolean> = MutableStateFlow(false)
   var isSwitchOn = _isSwitchOn.asStateFlow()
 
-  fun toggleSwitch(){
-    _isSwitchOn.value = _isSwitchOn.value.not()
+  fun toggleSwitch(stateSwitch:Boolean){
+    _isSwitchOn.value = stateSwitch.not()
   }
 
 }
