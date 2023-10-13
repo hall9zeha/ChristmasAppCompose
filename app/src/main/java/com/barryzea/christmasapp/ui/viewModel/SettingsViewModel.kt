@@ -18,8 +18,13 @@ class SettingsViewModel @Inject constructor():ViewModel() {
   private val _isSwitchOn:MutableStateFlow<Boolean> = MutableStateFlow(false)
   var isSwitchOn = _isSwitchOn.asStateFlow()
 
+  private val _notifyAllow:MutableStateFlow<Boolean> = MutableStateFlow(false)
+  var notifyAllow = _notifyAllow.asStateFlow()
+
   fun toggleSwitch(stateSwitch:Boolean){
     _isSwitchOn.value = stateSwitch.not()
   }
-
+  fun toggleNotifySwitch(stateAllow:Boolean){
+    _notifyAllow.value = stateAllow.not()
+  }
 }

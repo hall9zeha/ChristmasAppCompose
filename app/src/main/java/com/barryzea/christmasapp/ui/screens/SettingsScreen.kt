@@ -39,9 +39,14 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: ScrollState, dataStore: SettingsStore){
-    val switchPref=dataStore.getFromDataStore().collectAsState(PrefsEntity(false)).value.darkTheme
-    viewModel.toggleSwitch(!switchPref!!)
-    var stateSwitch = viewModel.isSwitchOn.collectAsState(switchPref!!)
+
+    val prefs=dataStore.getFromDataStore().collectAsState(PrefsEntity(false,false))
+
+    viewModel.toggleSwitch(!prefs.value.darkTheme!!)
+    viewModel.toggleNotifySwitch(!prefs.value.dateNotify)
+
+    var stateSwitch = viewModel.isSwitchOn.collectAsState(prefs.value.darkTheme!!)
+    var stateNotify = viewModel.notifyAllow.collectAsState(prefs.value.dateNotify)
     Scaffold (modifier=Modifier.fillMaxSize()){
         Column(modifier= Modifier
             .padding(it)
@@ -64,8 +69,8 @@ fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: S
                 icon =R.drawable.ic_christmas_bell ,
                 iconDesc = R.string.christmasNotify ,
                 name = R.string.christmasNotify ,
-                state = MutableStateFlow(true).collectAsState()) {
-                //todo
+                state = stateNotify) {
+                viewModel.toggleNotifySwitch(stateNotify.value)
             }
             ClickablePref(icon = R.drawable.ic_tree,
                 iconDesc = R.string.aboutThis ,
