@@ -19,6 +19,8 @@ val white=Color.White
 //custom dark theme colors
 
 val blackHard = Color(0xFF212121)
+val blackForBackground = Color(0xff252525)
 val blackSoft = Color(0xFF323232)
+val blackSoftForSurface= Color(0xff525252)
 val accentColorCustom = Color(0xFFEE9595)
 

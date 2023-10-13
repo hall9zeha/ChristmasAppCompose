@@ -20,6 +20,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -40,10 +41,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.barryzea.christmasapp.common.Routes
 import com.barryzea.christmasapp.common.SettingsStore
+import com.barryzea.christmasapp.data.model.DarkTheme
 import com.barryzea.christmasapp.data.model.PrefsEntity
+import com.barryzea.christmasapp.data.model.localTheme
 import com.barryzea.christmasapp.ui.screens.CountdownScreen
 import com.barryzea.christmasapp.ui.screens.SettingsScreen
 import com.barryzea.christmasapp.ui.theme.ChristmasAppTheme
+import com.barryzea.christmasapp.ui.theme.blackHard
+import com.barryzea.christmasapp.ui.theme.blackSoft
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.Flow
 import javax.inject.Inject
@@ -58,36 +63,42 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            navController= rememberNavController()
+            navController = rememberNavController()
             scrollState = rememberScrollState()
-            ChristmasAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background,
+            //obtenemos el valor booleano para el tema en  general, guardado en Data Store que por defecto es false
+            val isDarkTheme = dataStore.getFromDataStore().collectAsState(PrefsEntity(false)).value.darkTheme
+            val darkTheme = DarkTheme(isDarkTheme!!)
+            //lo guardamos en el LocalProvider para que sea accecible en toda la app sin tener que llamar las
+            //preferencias nuevamente
+            CompositionLocalProvider(localTheme provides darkTheme) {
+                ChristmasAppTheme(darkTheme = localTheme.current.isDark) {
+                    // A surface container using the 'background' color from the theme
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background,
 
-                ) {
-                    Card(modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp),
-                        elevation = CardDefaults.cardElevation( defaultElevation = 4.dp),
-                        shape= RoundedCornerShape(16.dp)
-                    ){
-                    Scaffold(bottomBar = {
-                        if(scrollState.value==0) {
-                            BottomNavigationBar(navController!!)
+                        ) {
+                        Card(modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp),
+                            elevation = CardDefaults.cardElevation( defaultElevation = 4.dp),
+                            shape= RoundedCornerShape(16.dp)
+                        ){
+                            Scaffold(bottomBar = {
+                                if(scrollState.value==0) {
+                                    BottomNavigationBar(navController!!)
+                                }
+                            }
+                            ) { paddingValues->
+                                SetUpNavController(scrollState)
+                                //para evitar que el Scaffold se queje por no usar sus paddingValues usaremos lo siguiente
+                                Column (modifier=Modifier.padding(paddingValues)){}
+                            }
                         }
+
                     }
-                       ) { paddingValues->
-                        SetUpNavController(scrollState)
-                        //para evitar que el Scaffold se queje por no usar sus paddingValues usaremos lo siguiente
-                        Column (modifier=Modifier.padding(paddingValues)){}
-                        }
-                    }
-                   // val value=dataStore.getFromDataStore().collectAsState(PrefsEntity(false)).value.darkTheme
-                   //Toast.makeText(LocalContext.current, value.toString(), Toast.LENGTH_SHORT).show()
+
                 }
-
             }
         }
     }
@@ -104,7 +115,8 @@ class MainActivity : ComponentActivity() {
         val navBackStackEntry by navController?.currentBackStackEntryAsState()!!
         val currentRoute = navBackStackEntry?.destination?.route
 
-        NavigationBar(containerColor = Color(0xfff9f6f9)){
+        NavigationBar(containerColor = if(localTheme.current.isDark) blackHard else
+        Color(0xfff9f6f9)){
             screens.forEach { screen->
                 NavigationBarItem(selected = currentRoute == screen,
                     modifier= Modifier.padding(8.dp),

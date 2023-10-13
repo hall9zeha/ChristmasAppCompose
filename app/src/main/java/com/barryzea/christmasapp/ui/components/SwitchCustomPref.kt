@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -28,6 +29,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.barryzea.christmasapp.R
+import com.barryzea.christmasapp.data.model.localTheme
+import com.barryzea.christmasapp.ui.theme.greenSoft
+import com.barryzea.christmasapp.ui.theme.salmonRed
+import com.barryzea.christmasapp.ui.theme.salmonRedSoft
 import kotlinx.coroutines.flow.MutableStateFlow
 
 
@@ -64,7 +69,11 @@ fun SwitchCustomPref(
                         textAlign= TextAlign.Start)
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                Switch(checked = state.value!!, onCheckedChange ={onClick()} )
+                Switch(checked = state.value!!, onCheckedChange ={onClick()},
+                    colors = if(localTheme.current.isDark)SwitchDefaults.colors(
+                            checkedThumbColor = salmonRedSoft
+                        )else SwitchDefaults.colors(checkedThumbColor = Color.LightGray)
+                    )
             }
             Divider()
         }

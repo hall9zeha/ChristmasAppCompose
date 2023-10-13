@@ -48,6 +48,8 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.barryzea.christmasapp.R
 import com.barryzea.christmasapp.data.model.CountdownEntity
+import com.barryzea.christmasapp.data.model.localTheme
+import com.barryzea.christmasapp.ui.theme.greenSoft
 import com.barryzea.christmasapp.ui.viewModel.MainViewModel
 
 
@@ -151,8 +153,9 @@ fun ItsNotChristmasYet(response:CountdownEntity, modifier:Modifier){
             modifier = Modifier.layoutId("headerRow"),
             horizontalArrangement = Arrangement.Center
         ) {
-            GenericTextView("tvStill",msgText = stringResource(R.string.still), Color(0xff323232),34.sp,modifier =modifier )
-
+            GenericTextView("tvStill",msgText = stringResource(R.string.still),
+                color=if(localTheme.current.isDark)Color.White else Color(0xff323232),
+                34.sp,modifier =modifier )
         }
         Box(
             modifier = Modifier
@@ -170,8 +173,12 @@ fun ItsNotChristmasYet(response:CountdownEntity, modifier:Modifier){
                     .width(260.dp)
             )
             Column(Modifier.padding(0.dp)) {
-                GenericTextView("tvDays",msgText = response.day.toString(), Color(0xff323232),34.sp,modifier =modifier )
-                GenericTextView("tvDaysDesc",msgText = stringResource(id = R.string.days), Color(0xff323232),16.sp,modifier =modifier )
+                GenericTextView("tvDays",msgText = response.day.toString(),
+                    color = if(localTheme.current.isDark) Color.White else Color(0xff323232),
+                    34.sp,modifier =modifier )
+                GenericTextView("tvDaysDesc",msgText = stringResource(id = R.string.days),
+                    color=if(localTheme.current.isDark) Color.White else Color(0xff323232),
+                    16.sp,modifier =modifier )
             }
         }
         // Surface(shadowElevation = 2.dp) {
@@ -182,7 +189,8 @@ fun ItsNotChristmasYet(response:CountdownEntity, modifier:Modifier){
                 .shadow(2.dp)
                 // .height(80.dp)
                 .wrapContentHeight()
-                .background(color = Color(0xFFF05454))
+                .background(color = if(localTheme.current.isDark) greenSoft else
+                Color(0xFFF05454))
         ) {
 
             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
