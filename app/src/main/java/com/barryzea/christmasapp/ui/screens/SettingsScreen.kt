@@ -1,6 +1,5 @@
 package com.barryzea.christmasapp.ui.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,22 +7,26 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.barryzea.christmasapp.R
-import com.barryzea.christmasapp.common.SettingsStore
+import com.barryzea.christmasapp.common.preferences.SettingsStore
 import com.barryzea.christmasapp.data.model.PrefsEntity
+import com.barryzea.christmasapp.ui.components.ClickablePref
 import com.barryzea.christmasapp.ui.components.SwitchCustomPref
 import com.barryzea.christmasapp.ui.viewModel.SettingsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 
 /**
@@ -35,7 +38,7 @@ import javax.inject.Inject
 
 
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: ScrollState, dataStore:SettingsStore){
+fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: ScrollState, dataStore: SettingsStore){
     val switchPref=dataStore.getFromDataStore().collectAsState(PrefsEntity(false)).value.darkTheme
     viewModel.toggleSwitch(!switchPref!!)
     var stateSwitch = viewModel.isSwitchOn.collectAsState(switchPref!!)
@@ -44,8 +47,9 @@ fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: S
             .padding(it)
             .padding(16.dp)
             .verticalScroll(scrollState)){
+            Text(text = "Configuración", fontSize = 20.sp,modifier= Modifier.align(Alignment.CenterHorizontally))
            SwitchCustomPref(
-               icon =R.drawable.ic_tree,
+               icon =R.drawable.ic_christmas_stars,
                iconDesc = R.string.nightMode,
                name =R.string.nightMode,
                state = stateSwitch
@@ -56,6 +60,18 @@ fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: S
                    dataStore.saveToDataStore(PrefsEntity(!stateSwitch.value!!))
                }
            }
+            SwitchCustomPref(
+                icon =R.drawable.ic_christmas_bell ,
+                iconDesc = R.string.christmasNotify ,
+                name = R.string.christmasNotify ,
+                state = MutableStateFlow(true).collectAsState()) {
+                //todo
+            }
+            ClickablePref(icon = R.drawable.ic_tree,
+                iconDesc = R.string.aboutThis ,
+                name = R.string.aboutThis) {
+
+            }
 
         }
 
@@ -71,5 +87,5 @@ fun nightModeAllow(){
 )
 @Composable
 fun SettingsPreview(){
-    SettingsScreen(scrollState = rememberScrollState(),dataStore=SettingsStore(LocalContext.current))
+    SettingsScreen(scrollState = rememberScrollState(),dataStore= SettingsStore(LocalContext.current))
 }

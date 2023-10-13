@@ -30,6 +30,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.barryzea.christmasapp.R
 import com.barryzea.christmasapp.data.model.localTheme
+import com.barryzea.christmasapp.ui.theme.blackSoft
+import com.barryzea.christmasapp.ui.theme.greenMoreSoft
 import com.barryzea.christmasapp.ui.theme.greenSoft
 import com.barryzea.christmasapp.ui.theme.salmonRed
 import com.barryzea.christmasapp.ui.theme.salmonRedSoft
@@ -71,8 +73,14 @@ fun SwitchCustomPref(
                 Spacer(modifier = Modifier.weight(1f))
                 Switch(checked = state.value!!, onCheckedChange ={onClick()},
                     colors = if(localTheme.current.isDark)SwitchDefaults.colors(
-                            checkedThumbColor = salmonRedSoft
-                        )else SwitchDefaults.colors(checkedThumbColor = Color.LightGray)
+                            checkedThumbColor = salmonRedSoft,
+                            uncheckedTrackColor = MaterialTheme.colorScheme.surface,
+                            uncheckedThumbColor = greenSoft
+                        )else SwitchDefaults.colors(
+                            //checkedThumbColor = greenSoft,
+                            uncheckedThumbColor = greenSoft,
+                            //checkedTrackColor = greenMoreSoft
+                            )
                     )
             }
             Divider()

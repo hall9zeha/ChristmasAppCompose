@@ -49,6 +49,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.barryzea.christmasapp.R
 import com.barryzea.christmasapp.data.model.CountdownEntity
 import com.barryzea.christmasapp.data.model.localTheme
+import com.barryzea.christmasapp.ui.theme.greenHard
 import com.barryzea.christmasapp.ui.theme.greenSoft
 import com.barryzea.christmasapp.ui.viewModel.MainViewModel
 
@@ -189,7 +190,7 @@ fun ItsNotChristmasYet(response:CountdownEntity, modifier:Modifier){
                 .shadow(2.dp)
                 // .height(80.dp)
                 .wrapContentHeight()
-                .background(color = if(localTheme.current.isDark) greenSoft else
+                .background(color = if(localTheme.current.isDark) greenHard else
                 Color(0xFFF05454))
         ) {
 

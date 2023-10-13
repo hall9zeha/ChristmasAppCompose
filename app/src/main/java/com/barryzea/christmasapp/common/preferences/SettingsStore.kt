@@ -1,4 +1,4 @@
-package com.barryzea.christmasapp.common
+package com.barryzea.christmasapp.common.preferences
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -22,14 +22,18 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 class SettingsStore @Inject constructor(private val context:Context) {
  companion object{
    val NIGHT_MODE = booleanPreferencesKey("NIGHT_MODE")
+   val DATE_NOTIFY = booleanPreferencesKey("DATE_NOTIFY")
  }
  suspend fun saveToDataStore(prefsEntity:PrefsEntity){
   context.dataStore.edit {
    it[NIGHT_MODE] = prefsEntity.darkTheme!!
+   it[DATE_NOTIFY] = prefsEntity.dateNotify!!
   }
  }
  fun getFromDataStore() = context.dataStore.data.map{
-   PrefsEntity(darkTheme = it[NIGHT_MODE]?:false)
+   PrefsEntity(
+    darkTheme = it[NIGHT_MODE]?:false,
+    dateNotify = it[DATE_NOTIFY]?:false)
  }
  suspend fun clearDataStore()=context.dataStore.edit{
   it.clear()

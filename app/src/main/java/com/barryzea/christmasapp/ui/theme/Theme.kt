@@ -21,13 +21,13 @@ import com.barryzea.christmasapp.data.model.DarkTheme
 
 private val DarkColorScheme = darkColorScheme(
     primary = blackSoftForSurface,
-    surfaceVariant= salmonRed,
+    surfaceVariant= salmonRedSoft,
     background= blackForBackground,
-    secondary = salmonRed,
+    secondary = salmonRedSoft,
     tertiary = accentColorCustom,
     surface = blackSoft,
-    onSurface = white,
-    primaryContainer = salmonRed,
+    onSurface = greenSoft,
+    primaryContainer = salmonRedSoft,
     onPrimaryContainer = greenSoft
 
 )

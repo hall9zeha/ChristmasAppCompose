@@ -1,7 +1,6 @@
 package com.barryzea.christmasapp
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ScrollState
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -25,12 +23,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.widget.NestedScrollView
-import androidx.datastore.dataStore
 
 
 import androidx.navigation.NavController
@@ -40,7 +35,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.barryzea.christmasapp.common.Routes
-import com.barryzea.christmasapp.common.SettingsStore
+import com.barryzea.christmasapp.common.preferences.SettingsStore
 import com.barryzea.christmasapp.data.model.DarkTheme
 import com.barryzea.christmasapp.data.model.PrefsEntity
 import com.barryzea.christmasapp.data.model.localTheme
@@ -48,9 +43,7 @@ import com.barryzea.christmasapp.ui.screens.CountdownScreen
 import com.barryzea.christmasapp.ui.screens.SettingsScreen
 import com.barryzea.christmasapp.ui.theme.ChristmasAppTheme
 import com.barryzea.christmasapp.ui.theme.blackHard
-import com.barryzea.christmasapp.ui.theme.blackSoft
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.concurrent.Flow
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -76,7 +69,6 @@ class MainActivity : ComponentActivity() {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background,
-
                         ) {
                         Card(modifier = Modifier
                             .fillMaxSize()

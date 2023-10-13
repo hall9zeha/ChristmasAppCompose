@@ -8,4 +8,6 @@
     <string name="enjoyIt">Disfrútalo</string>
     <string name="still">Faltan</string>
     <string name="nightMode">Activar modo noche</string>
+    <string name="christmasNotify">Notificarme antes</string>
+    <string name="aboutThis">Acerca de esta app</string>
 </resources>
