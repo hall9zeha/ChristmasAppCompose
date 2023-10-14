@@ -1,5 +1,6 @@
 package com.barryzea.christmasapp.ui.screens
 
+import android.app.NotificationManager
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,9 +17,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.barryzea.christmasapp.R
 import com.barryzea.christmasapp.common.preferences.SettingsStore
+import com.barryzea.christmasapp.common.sendNotification
 import com.barryzea.christmasapp.data.model.PrefsEntity
 import com.barryzea.christmasapp.ui.components.ClickablePref
 import com.barryzea.christmasapp.ui.components.SwitchCustomPref
