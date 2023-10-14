@@ -3,10 +3,14 @@ package com.barryzea.christmasapp.common
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.media.AudioAttributes
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -49,10 +53,10 @@ fun sendNotification(
 
     }else{
         PendingIntent.getActivity(context, NOTIFICATION_ID, mainIntent,
-            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     }
     val notificationManager = ContextCompat.getSystemService(context, NotificationManager::class.java) as NotificationManager
-    createNotificationChannel(context, notificationManager)
+    createNotificationChannel(notificationManager)
     val builder = NotificationCompat.Builder(
         context, CHANNEL_ID)
         .setSmallIcon(R.mipmap.ic_launcher)
@@ -66,7 +70,12 @@ fun sendNotification(
 
 }
 fun NotificationManager.cancelNotification()=cancelAll()
-fun createNotificationChannel(context: Context, notificationManager: NotificationManager){
+fun createNotificationChannel(notificationManager: NotificationManager){
+
+    val christmasBellsSoundUri= Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://"+MyApp.context.packageName+"/raw/"+"bells_sound")
+    val audioAttributes = AudioAttributes.Builder()
+        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+        .build()
 
     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
         val notificationChannel = NotificationChannel(
@@ -75,7 +84,9 @@ fun createNotificationChannel(context: Context, notificationManager: Notificatio
         ).apply {
             enableLights(true)
             enableVibration(true)
-            lightColor = Color.WHITE
+            lightColor = Color.BLUE
+            setSound(Settings.System.DEFAULT_RINGTONE_URI, audioAttributes)
+            setSound(christmasBellsSoundUri,audioAttributes)
         }
         notificationManager.createNotificationChannel(notificationChannel)
     }
