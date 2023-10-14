@@ -1,2 +1,2 @@
 # ChristmasAppCompose
-A christmas Android App uisng Compose Jetpack
+A christmas Android App using Compose Jetpack
