@@ -1,5 +1,6 @@
 package com.barryzea.christmasapp.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,21 +13,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.barryzea.christmasapp.R
-import com.barryzea.christmasapp.common.preferences.SettingsStore
+import com.barryzea.christmasapp.common.REMINDER_ENTITY_KEY
+import com.barryzea.christmasapp.common.getDatetimeWithoutHours
+import com.barryzea.christmasapp.common.setAlarm
 import com.barryzea.christmasapp.data.model.PrefsEntity
+import com.barryzea.christmasapp.data.model.Reminder
 import com.barryzea.christmasapp.ui.components.ClickablePref
 import com.barryzea.christmasapp.ui.components.SwitchCustomPref
 import com.barryzea.christmasapp.ui.viewModel.SettingsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 
 /**
@@ -36,17 +42,11 @@ import kotlinx.coroutines.launch
  **/
 
 
-
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: ScrollState, dataStore: SettingsStore){
+fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: ScrollState){
 
-    val prefs=dataStore.getFromDataStore().collectAsState(PrefsEntity(false,false))
-
-    viewModel.toggleSwitch(!prefs.value.darkTheme!!)
-    viewModel.toggleNotifySwitch(!prefs.value.dateNotify)
-
-    var stateSwitch = viewModel.isSwitchOn.collectAsState(prefs.value.darkTheme!!)
-    var stateNotify = viewModel.notifyAllow.collectAsState(prefs.value.dateNotify)
+    var stateSwitch = viewModel.isSwitchOn.collectAsState(false)
+    var stateNotify = viewModel.notifyAllow.collectAsState(false)
     Scaffold (modifier=Modifier.fillMaxSize()){
         Column(modifier= Modifier
             .padding(it)
@@ -62,7 +62,8 @@ fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: S
               //guardamos la preferencia de modo noche
                CoroutineScope(Dispatchers.IO).launch{
                    viewModel.toggleSwitch(stateSwitch.value!!)
-                   dataStore.saveToDataStore(PrefsEntity(!stateSwitch.value!!))
+                   viewModel.saveToDataStore(PrefsEntity(!stateSwitch.value!!))
+
                }
            }
             SwitchCustomPref(
@@ -75,7 +76,9 @@ fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: S
             ClickablePref(icon = R.drawable.ic_tree,
                 iconDesc = R.string.aboutThis ,
                 name = R.string.aboutThis) {
-
+                // Prueba sencilla de alarma con notificacion usando ala fecha actual
+                val reminder = Reminder(25,"prueba de alarma", getDatetimeWithoutHours(Calendar.getInstance().timeInMillis))
+                setAlarm(reminder)
             }
 
         }
@@ -92,5 +95,5 @@ fun nightModeAllow(){
 )
 @Composable
 fun SettingsPreview(){
-    SettingsScreen(scrollState = rememberScrollState(),dataStore= SettingsStore(LocalContext.current))
+    SettingsScreen(scrollState = rememberScrollState())
 }

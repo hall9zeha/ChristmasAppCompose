@@ -50,7 +50,6 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit  var dataStore: SettingsStore
-
     private  var navController: NavHostController?=null
     private  lateinit var scrollState:ScrollState
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,7 +97,7 @@ class MainActivity : ComponentActivity() {
     fun SetUpNavController(scrollState: ScrollState){
         NavHost(navController = navController!!, startDestination = Routes.CountDownScreen.route){
             composable(Routes.CountDownScreen.route){ CountdownScreen(scrollState = scrollState)}
-            composable(Routes.SettingsScreen.route){ SettingsScreen(scrollState = scrollState, dataStore = dataStore)}
+            composable(Routes.SettingsScreen.route){ SettingsScreen(scrollState = scrollState)}
         }
     }
     @Composable

@@ -2,6 +2,8 @@ package com.barryzea.christmasapp.di
 
 import android.app.Application
 import android.content.Context
+import androidx.datastore.core.DataStore
+import com.barryzea.christmasapp.common.preferences.SettingsStore
 import com.barryzea.christmasapp.data.repository.MainRepository
 import com.barryzea.christmasapp.data.repository.MainRepositoryImpl
 import dagger.Binds
@@ -10,6 +12,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+import javax.sql.DataSource
 
 
 /**
