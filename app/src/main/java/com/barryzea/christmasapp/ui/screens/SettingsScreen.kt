@@ -26,10 +26,12 @@ import com.barryzea.christmasapp.data.model.PrefsEntity
 import com.barryzea.christmasapp.ui.components.ClickablePref
 import com.barryzea.christmasapp.ui.components.SwitchCustomPref
 import com.barryzea.christmasapp.ui.viewModel.SettingsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 /**
@@ -39,17 +41,11 @@ import kotlinx.coroutines.launch
  **/
 
 
-
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: ScrollState, dataStore: SettingsStore){
+fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: ScrollState){
 
-    val prefs=dataStore.getFromDataStore().collectAsState(PrefsEntity(false,false))
-
-    viewModel.toggleSwitch(!prefs.value.darkTheme!!)
-    viewModel.toggleNotifySwitch(!prefs.value.dateNotify)
-
-    var stateSwitch = viewModel.isSwitchOn.collectAsState(prefs.value.darkTheme!!)
-    var stateNotify = viewModel.notifyAllow.collectAsState(prefs.value.dateNotify)
+    var stateSwitch = viewModel.isSwitchOn.collectAsState(false)
+    var stateNotify = viewModel.notifyAllow.collectAsState(false)
     Scaffold (modifier=Modifier.fillMaxSize()){
         Column(modifier= Modifier
             .padding(it)
@@ -65,7 +61,8 @@ fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: S
               //guardamos la preferencia de modo noche
                CoroutineScope(Dispatchers.IO).launch{
                    viewModel.toggleSwitch(stateSwitch.value!!)
-                   dataStore.saveToDataStore(PrefsEntity(!stateSwitch.value!!))
+                   viewModel.saveToDataStore(PrefsEntity(!stateSwitch.value!!))
+
                }
            }
             SwitchCustomPref(
@@ -95,5 +92,5 @@ fun nightModeAllow(){
 )
 @Composable
 fun SettingsPreview(){
-    SettingsScreen(scrollState = rememberScrollState(),dataStore= SettingsStore(LocalContext.current))
+    SettingsScreen(scrollState = rememberScrollState())
 }
