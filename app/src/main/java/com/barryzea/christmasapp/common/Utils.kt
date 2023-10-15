@@ -1,5 +1,7 @@
 package com.barryzea.christmasapp.common
 
+import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -11,13 +13,20 @@ import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import com.barryzea.christmasapp.MainActivity
 import com.barryzea.christmasapp.MyApp
 import com.barryzea.christmasapp.MyApp.Companion.context
 import com.barryzea.christmasapp.R
+import com.barryzea.christmasapp.data.model.Reminder
+import com.barryzea.christmasapp.ui.br.AlarmReceiver
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 
 /**
@@ -32,6 +41,8 @@ import com.barryzea.christmasapp.R
 private val NOTIFICATION_ID = 125
 private const val CHANNEL_ID ="christmas_notify_id"
 private const val CHANNEL_NAME = "ChristmasApp"
+const val REMINDER_ENTITY_KEY = "REMINDER_ENTITY_KEY"
+
 fun getFontProviders():GoogleFont.Provider{
     return GoogleFont.Provider(
         providerAuthority = "com.google.android.gms.fonts",
@@ -39,7 +50,7 @@ fun getFontProviders():GoogleFont.Provider{
         certificates = R.array.com_google_android_gms_fonts_certs
     )
 }
-//Configuramos el manejador de notificaciónes
+// Configuramos el manejador de notificaciónes
 fun sendNotification(
     title:String,
     message:String
@@ -90,5 +101,31 @@ fun createNotificationChannel(notificationManager: NotificationManager){
         }
         notificationManager.createNotificationChannel(notificationChannel)
     }
+}
 
+// Solo devolverá la fecha en día/mes/año (tipo Long) de cualquier valor de tiempo en milisegundos
+fun getDatetimeWithoutHours(timeInMillis: Long): Long {
+    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
+    val dateStringFormatted = sdf.format(timeInMillis)
+    return sdf.parse(dateStringFormatted)?.time ?: 0
+}
+@SuppressLint("ScheduleExactAlarm")
+fun setAlarm(reminderEntity:Reminder){
+    val context = MyApp.context
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    val intent = Intent(context, AlarmReceiver::class.java)
+    intent.putExtra(REMINDER_ENTITY_KEY,reminderEntity)
+    val pendingIntent = PendingIntent.getBroadcast(context,reminderEntity.id, intent,PendingIntent.FLAG_IMMUTABLE)
+    val mainActivityIntent = Intent(context,MainActivity::class.java)
+    val basicPendingIntent = PendingIntent.getActivity(context,reminderEntity.id,mainActivityIntent,PendingIntent.FLAG_IMMUTABLE)
+
+    val clock = AlarmManager.AlarmClockInfo(reminderEntity.timeInMillis,basicPendingIntent)
+    alarmManager.setAlarmClock(clock,pendingIntent)
+}
+fun removeAlarm(reminderEntity: Reminder){
+    val context = MyApp.context
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    val intent = Intent(context, AlarmReceiver::class.java)
+    val pendingIntent = PendingIntent.getBroadcast(context, reminderEntity.id,intent, PendingIntent.FLAG_IMMUTABLE)
+    alarmManager.cancel(pendingIntent)
 }
