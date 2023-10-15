@@ -1,6 +1,9 @@
 package com.barryzea.christmasapp.ui.screens
 
-import android.util.Log
+import android.Manifest
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,12 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.barryzea.christmasapp.MyApp
 import com.barryzea.christmasapp.R
-import com.barryzea.christmasapp.common.REMINDER_ENTITY_KEY
+import com.barryzea.christmasapp.common.checkPermissions
 import com.barryzea.christmasapp.common.getDatetimeWithoutHours
 import com.barryzea.christmasapp.common.setAlarm
 import com.barryzea.christmasapp.data.model.PrefsEntity
@@ -29,10 +34,7 @@ import com.barryzea.christmasapp.ui.viewModel.SettingsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
-import java.util.Locale
 
 
 /**
@@ -44,6 +46,14 @@ import java.util.Locale
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: ScrollState){
+    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission() ){
+        if(it){
+            isGranted()
+            //Toast.makeText(MyApp.context, "Granted", Toast.LENGTH_SHORT).show()
+        }else{
+            //todo crear un diálogo para explicar la necesidad de estos permisos
+        }
+    }
 
     var stateSwitch = viewModel.isSwitchOn.collectAsState(false)
     var stateNotify = viewModel.notifyAllow.collectAsState(false)
@@ -76,9 +86,17 @@ fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: S
             ClickablePref(icon = R.drawable.ic_tree,
                 iconDesc = R.string.aboutThis ,
                 name = R.string.aboutThis) {
-                // Prueba sencilla de alarma con notificacion usando ala fecha actual
-                val reminder = Reminder(25,"prueba de alarma", getDatetimeWithoutHours(Calendar.getInstance().timeInMillis))
-                setAlarm(reminder)
+
+                checkPermissions(permission = Manifest.permission.POST_NOTIFICATIONS){isGranted->
+                    if(isGranted){
+                        // Prueba sencilla de alarma con notificacion usando ala fecha actual
+                        val reminder = Reminder(25,"prueba de alarma", getDatetimeWithoutHours(
+                            Calendar.getInstance().timeInMillis))
+                        setAlarm(reminder)
+                    }else{
+                         launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+                }
             }
 
         }
@@ -86,7 +104,7 @@ fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: S
     }
 
 }
-fun nightModeAllow(){
+fun isGranted(){
 
 }
 @Preview(
