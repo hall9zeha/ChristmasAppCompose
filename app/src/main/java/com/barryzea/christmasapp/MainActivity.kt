@@ -49,16 +49,17 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
-    lateinit  var dataStore: SettingsStore
-    private  var navController: NavHostController?=null
-    private  lateinit var scrollState:ScrollState
+    lateinit var dataStore: SettingsStore
+    private var navController: NavHostController? = null
+    private lateinit var scrollState: ScrollState
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             navController = rememberNavController()
             scrollState = rememberScrollState()
             //obtenemos el valor booleano para el tema en  general, guardado en Data Store que por defecto es false
-            val isDarkTheme = dataStore.getFromDataStore().collectAsState(PrefsEntity(false)).value.darkTheme
+            val isDarkTheme =
+                dataStore.getFromDataStore().collectAsState(PrefsEntity(false)).value.darkTheme
             val darkTheme = DarkTheme(isDarkTheme!!)
             //lo guardamos en el LocalProvider para que sea accecible en toda la app sin tener que llamar las
             //preferencias nuevamente
@@ -68,22 +69,23 @@ class MainActivity : ComponentActivity() {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background,
+                    ) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(8.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                            shape = RoundedCornerShape(16.dp)
                         ) {
-                        Card(modifier = Modifier
-                            .fillMaxSize()
-                            .padding(8.dp),
-                            elevation = CardDefaults.cardElevation( defaultElevation = 4.dp),
-                            shape= RoundedCornerShape(16.dp)
-                        ){
                             Scaffold(bottomBar = {
-                                if(scrollState.value==0) {
+                                if (scrollState.value == 0) {
                                     BottomNavigationBar(navController!!)
                                 }
                             }
-                            ) { paddingValues->
+                            ) { paddingValues ->
                                 SetUpNavController(scrollState)
                                 //para evitar que el Scaffold se queje por no usar sus paddingValues usaremos lo siguiente
-                                Column (modifier=Modifier.padding(paddingValues)){}
+                                Column(modifier = Modifier.padding(paddingValues)) {}
                             }
                         }
 
@@ -93,43 +95,50 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
     @Composable
-    fun SetUpNavController(scrollState: ScrollState){
-        NavHost(navController = navController!!, startDestination = Routes.CountDownScreen.route){
-            composable(Routes.CountDownScreen.route){ CountdownScreen(scrollState = scrollState)}
-            composable(Routes.SettingsScreen.route){ SettingsScreen(scrollState = scrollState)}
+    fun SetUpNavController(scrollState: ScrollState) {
+        NavHost(navController = navController!!, startDestination = Routes.CountDownScreen.route) {
+            composable(Routes.CountDownScreen.route) { CountdownScreen(scrollState = scrollState) }
+            composable(Routes.SettingsScreen.route) { SettingsScreen(scrollState = scrollState) }
         }
     }
+
     @Composable
-    fun BottomNavigationBar(navController: NavController){
-        val screens = listOf(Routes.CountDownScreen.route,Routes.SettingsScreen.route)
+    fun BottomNavigationBar(navController: NavController) {
+        val screens = listOf(Routes.CountDownScreen.route, Routes.SettingsScreen.route)
         val navBackStackEntry by navController?.currentBackStackEntryAsState()!!
         val currentRoute = navBackStackEntry?.destination?.route
 
-        NavigationBar(containerColor = if(localTheme.current.isDark) blackHard else
-        Color(0xfff9f6f9)){
-            screens.forEach { screen->
+        NavigationBar(
+            containerColor = if (localTheme.current.isDark) blackHard else
+                Color(0xfff9f6f9)
+        ) {
+            screens.forEach { screen ->
                 NavigationBarItem(selected = currentRoute == screen,
-                    modifier= Modifier.padding(8.dp),
-                    onClick = { navController?.navigate(screen) {
-                        navController?.graph?.startDestinationRoute?.let { screen_route ->
-                            popUpTo(screen_route) {
-                                saveState = true
+                    modifier = Modifier.padding(8.dp),
+                    onClick = {
+                        navController?.navigate(screen) {
+                            navController?.graph?.startDestinationRoute?.let { screen_route ->
+                                popUpTo(screen_route) {
+                                    saveState = true
+                                }
                             }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                              },
-                    icon ={ Icon(painterResource(getIcoForScreen(screenName = screen)) ,contentDescription="") })
+                    },
+                    icon = {
+                        Icon(
+                            painterResource(getIcoForScreen(screenName = screen)),
+                            contentDescription = ""
+                        )
+                    })
             }
         }
-
     }
 }
-
-
-fun getIcoForScreen(screenName:String): Int {
+private fun getIcoForScreen(screenName:String): Int {
     return when(screenName){
         "Home"-> R.drawable.ic_santa
         "Settings" -> R.drawable.ic_snowflake
