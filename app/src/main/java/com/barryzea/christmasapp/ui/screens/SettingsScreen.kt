@@ -1,6 +1,7 @@
 package com.barryzea.christmasapp.ui.screens
 
 import android.Manifest
+import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -86,16 +87,22 @@ fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: S
             ClickablePref(icon = R.drawable.ic_tree,
                 iconDesc = R.string.aboutThis ,
                 name = R.string.aboutThis) {
-
-                checkPermissions(permission = Manifest.permission.POST_NOTIFICATIONS){isGranted->
-                    if(isGranted){
-                        // Prueba sencilla de alarma con notificacion usando ala fecha actual
-                        val reminder = Reminder(25,"prueba de alarma", getDatetimeWithoutHours(
-                            Calendar.getInstance().timeInMillis))
-                        setAlarm(reminder)
-                    }else{
-                         launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                // Prueba sencilla de alarma con notificacion usando ala fecha actual
+                val reminder = Reminder(
+                    25, "prueba de alarma", getDatetimeWithoutHours(
+                        Calendar.getInstance().timeInMillis
+                    )
+                )
+                if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) {
+                    checkPermissions(permission = Manifest.permission.POST_NOTIFICATIONS) { isGranted ->
+                        if (isGranted) {
+                           setAlarm(reminder)
+                        } else {
+                            launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
                     }
+                }else{
+                    setAlarm(reminder)
                 }
             }
 

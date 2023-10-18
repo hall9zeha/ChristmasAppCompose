@@ -22,19 +22,10 @@ import com.barryzea.christmasapp.MyApp
 
     val context = MyApp.context
     //Android 13 requiere permisos para lanzar notificaciones
-    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-        if(ContextCompat.checkSelfPermission(
-                context,
-                permission
-        )==PackageManager.PERMISSION_GRANTED){
+    if(ContextCompat.checkSelfPermission(context,permission)==PackageManager.PERMISSION_GRANTED){
             //if granted
             isGranted(true)
         }else{
             isGranted(false)
-            //launcher.launch(permission)
         }
-    }
-    else{
-        isGranted(true)
-    }
- }
+  }
