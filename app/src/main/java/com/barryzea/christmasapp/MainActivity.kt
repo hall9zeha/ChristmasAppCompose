@@ -3,6 +3,7 @@ package com.barryzea.christmasapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 
 import androidx.navigation.NavController
@@ -43,6 +45,7 @@ import com.barryzea.christmasapp.ui.screens.CountdownScreen
 import com.barryzea.christmasapp.ui.screens.SettingsScreen
 import com.barryzea.christmasapp.ui.theme.ChristmasAppTheme
 import com.barryzea.christmasapp.ui.theme.blackHard
+import com.barryzea.christmasapp.ui.viewModel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -50,10 +53,18 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var dataStore: SettingsStore
+
+    val viewModel:MainViewModel by viewModels()
+
     private var navController: NavHostController? = null
     private lateinit var scrollState: ScrollState
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen().apply {
+            setKeepOnScreenCondition{
+                viewModel.loading.value
+            }
+        }
         setContent {
             navController = rememberNavController()
             scrollState = rememberScrollState()
