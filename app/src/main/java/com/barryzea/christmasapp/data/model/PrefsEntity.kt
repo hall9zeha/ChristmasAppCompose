@@ -7,5 +7,5 @@ package com.barryzea.christmasapp.data.model
  * Copyright (c)  All rights reserved.
  **/
 
-data class PrefsEntity(val darkTheme:Boolean?=null,
+data class PrefsEntity(val darkTheme:Boolean=false,
     val dateNotify:Boolean=false)
