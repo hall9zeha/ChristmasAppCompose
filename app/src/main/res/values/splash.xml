@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.App.First" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">?android:attr/colorBackground</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/christmas_bell</item>
+        <item name="postSplashScreenTheme">@style/Theme.ChristmasApp</item>
+        <item name="windowSplashScreenAnimationDuration">500</item>
+    </style>
+</resources>

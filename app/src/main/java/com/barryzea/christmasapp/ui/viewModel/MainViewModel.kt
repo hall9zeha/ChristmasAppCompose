@@ -9,6 +9,9 @@ import com.barryzea.christmasapp.data.model.CountdownEntity
 import com.barryzea.christmasapp.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -26,8 +29,19 @@ class MainViewModel @Inject constructor(private val repository:MainRepository):V
 
     private var _christmasCountdown:MutableLiveData<CountdownEntity> = MutableLiveData()
     lateinit var job:Job
+
+    private var _loading = MutableStateFlow(true)
+    val loading = _loading.asStateFlow()
     val christmasCountdown:LiveData<CountdownEntity> get() = _christmasCountdown
 
+    //Inicializamos el valor de loading en true para mostrar el splash screen
+    init{
+        viewModelScope.launch {
+            //Le damos un retraso de 2 segundos para luego mostrar la pantalla principal
+            delay(1000)
+            _loading.value = false
+        }
+    }
     fun fetchChristmasCountdown(){
         job=viewModelScope.launch {
             repository.getChristmasCountdown().cancellable()
