@@ -34,6 +34,12 @@ class MainViewModel @Inject constructor(private val repository:MainRepository):V
     val loading = _loading.asStateFlow()
     val christmasCountdown:LiveData<CountdownEntity> get() = _christmasCountdown
 
+    //ScrollState para reminderScreen
+    private var lastScrollIndex =0
+    private val _scrollUp = MutableLiveData(false)
+    val scrollUp:LiveData<Boolean> get() = _scrollUp
+
+
     //Inicializamos el valor de loading en true para mostrar el splash screen
     init{
         viewModelScope.launch {
@@ -48,6 +54,12 @@ class MainViewModel @Inject constructor(private val repository:MainRepository):V
                 .catch { Log.e("ERROR", it.message.toString())}
                 .collect{ _christmasCountdown.value=it}
         }
+    }
+
+    fun updateScrollPosition(newScrollIndex:Int){
+        if(newScrollIndex == lastScrollIndex) return
+        _scrollUp.value = newScrollIndex > lastScrollIndex
+        lastScrollIndex = newScrollIndex
     }
 
 }

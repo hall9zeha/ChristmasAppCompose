@@ -8,6 +8,8 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -22,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -42,6 +45,7 @@ import com.barryzea.christmasapp.data.model.DarkTheme
 import com.barryzea.christmasapp.data.model.PrefsEntity
 import com.barryzea.christmasapp.data.model.localTheme
 import com.barryzea.christmasapp.ui.screens.CountdownScreen
+import com.barryzea.christmasapp.ui.screens.RemindersScreen
 import com.barryzea.christmasapp.ui.screens.SettingsScreen
 import com.barryzea.christmasapp.ui.theme.ChristmasAppTheme
 import com.barryzea.christmasapp.ui.theme.blackHard
@@ -58,6 +62,7 @@ class MainActivity : ComponentActivity() {
 
     private var navController: NavHostController? = null
     private lateinit var scrollState: ScrollState
+    private lateinit var  stateScrollList:LazyStaggeredGridState
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().apply {
@@ -68,6 +73,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             navController = rememberNavController()
             scrollState = rememberScrollState()
+            stateScrollList = rememberLazyStaggeredGridState()
+            val scrollUpState = viewModel.scrollUp.observeAsState()
+            viewModel.updateScrollPosition(stateScrollList.firstVisibleItemIndex)
+
             //obtenemos el valor booleano para el tema en  general, guardado en Data Store que por defecto es false
             val isDarkTheme =
                 dataStore.getFromDataStore().collectAsState(PrefsEntity(false)).value.darkTheme
@@ -89,12 +98,12 @@ class MainActivity : ComponentActivity() {
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             Scaffold(bottomBar = {
-                                if (scrollState.value == 0) {
-                                    BottomNavigationBar(navController!!)
+                                if(scrollState.value ==0 && !scrollUpState.value!!){
+                                    BottomNavigationBar(navController = navController!!)
                                 }
                             }
                             ) { paddingValues ->
-                                SetUpNavController(scrollState)
+                                SetUpNavController(scrollState,stateScrollList)
                                 //para evitar que el Scaffold se queje por no usar sus paddingValues usaremos lo siguiente
                                 Column(modifier = Modifier.padding(paddingValues)) {}
                             }
@@ -108,16 +117,17 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun SetUpNavController(scrollState: ScrollState) {
+    fun SetUpNavController(scrollState: ScrollState, scrollListState: LazyStaggeredGridState) {
         NavHost(navController = navController!!, startDestination = Routes.CountDownScreen.route) {
             composable(Routes.CountDownScreen.route) { CountdownScreen(scrollState = scrollState) }
             composable(Routes.SettingsScreen.route) { SettingsScreen(scrollState = scrollState) }
+            composable(Routes.RemindersScreen.route){ RemindersScreen(scrollState=scrollListState)}
         }
     }
 
     @Composable
     fun BottomNavigationBar(navController: NavController) {
-        val screens = listOf(Routes.CountDownScreen.route, Routes.SettingsScreen.route)
+        val screens = listOf(Routes.CountDownScreen.route,Routes.RemindersScreen.route, Routes.SettingsScreen.route)
         val navBackStackEntry by navController?.currentBackStackEntryAsState()!!
         val currentRoute = navBackStackEntry?.destination?.route
 
@@ -152,6 +162,7 @@ class MainActivity : ComponentActivity() {
 private fun getIcoForScreen(screenName:String): Int {
     return when(screenName){
         "Home"-> R.drawable.ic_santa
+        "Reminders"->R.drawable.ic_box_gift
         "Settings" -> R.drawable.ic_snowflake
         else -> R.drawable.ic_tree
     }

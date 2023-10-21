@@ -115,9 +115,9 @@ fun setAlarm(reminderEntity:Reminder){
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val intent = Intent(context, AlarmReceiver::class.java)
     intent.putExtra(REMINDER_ENTITY_KEY,reminderEntity)
-    val pendingIntent = PendingIntent.getBroadcast(context,reminderEntity.id, intent,PendingIntent.FLAG_IMMUTABLE)
+    val pendingIntent = PendingIntent.getBroadcast(context,reminderEntity.id.toInt(), intent,PendingIntent.FLAG_IMMUTABLE)
     val mainActivityIntent = Intent(context,MainActivity::class.java)
-    val basicPendingIntent = PendingIntent.getActivity(context,reminderEntity.id,mainActivityIntent,PendingIntent.FLAG_IMMUTABLE)
+    val basicPendingIntent = PendingIntent.getActivity(context,reminderEntity.id.toInt(),mainActivityIntent,PendingIntent.FLAG_IMMUTABLE)
 
     val clock = AlarmManager.AlarmClockInfo(reminderEntity.timeInMillis,basicPendingIntent)
     alarmManager.setAlarmClock(clock,pendingIntent)
@@ -126,6 +126,6 @@ fun removeAlarm(reminderEntity: Reminder){
     val context = MyApp.context
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val intent = Intent(context, AlarmReceiver::class.java)
-    val pendingIntent = PendingIntent.getBroadcast(context, reminderEntity.id,intent, PendingIntent.FLAG_IMMUTABLE)
+    val pendingIntent = PendingIntent.getBroadcast(context, reminderEntity.id.toInt(),intent, PendingIntent.FLAG_IMMUTABLE)
     alarmManager.cancel(pendingIntent)
 }

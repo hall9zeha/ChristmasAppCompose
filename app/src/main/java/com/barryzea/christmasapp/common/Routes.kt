@@ -10,4 +10,5 @@ package com.barryzea.christmasapp.common
 sealed class Routes (val route:String){
     object CountDownScreen:Routes("Home")
     object SettingsScreen:Routes("Settings")
+    object RemindersScreen:Routes("Reminders")
 }
