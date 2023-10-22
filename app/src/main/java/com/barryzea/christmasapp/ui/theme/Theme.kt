@@ -26,9 +26,9 @@ private val DarkColorScheme = darkColorScheme(
     secondary = salmonRedSoft,
     tertiary = accentColorCustom,
     surface = blackSoft,
-    onSurface = greenSoft,
-    primaryContainer = salmonRedSoft,
-    onPrimaryContainer = greenSoft
+    //onSurface = greenSoft,
+    primaryContainer = salmonSoft,
+    //onPrimaryContainer = greenSoft
 
 )
 

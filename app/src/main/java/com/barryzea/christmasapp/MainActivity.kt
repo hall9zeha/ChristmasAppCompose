@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,9 +25,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -45,6 +52,7 @@ import com.barryzea.christmasapp.data.model.DarkTheme
 import com.barryzea.christmasapp.data.model.PrefsEntity
 import com.barryzea.christmasapp.data.model.localTheme
 import com.barryzea.christmasapp.ui.screens.CountdownScreen
+import com.barryzea.christmasapp.ui.screens.ReminderDetail
 import com.barryzea.christmasapp.ui.screens.RemindersScreen
 import com.barryzea.christmasapp.ui.screens.SettingsScreen
 import com.barryzea.christmasapp.ui.theme.ChristmasAppTheme
@@ -63,6 +71,7 @@ class MainActivity : ComponentActivity() {
     private var navController: NavHostController? = null
     private lateinit var scrollState: ScrollState
     private lateinit var  stateScrollList:LazyStaggeredGridState
+    private lateinit var detailScreenIsShow:MutableState<Boolean>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().apply {
@@ -71,11 +80,13 @@ class MainActivity : ComponentActivity() {
             }
         }
         setContent {
+
             navController = rememberNavController()
             scrollState = rememberScrollState()
             stateScrollList = rememberLazyStaggeredGridState()
             val scrollUpState = viewModel.scrollUp.observeAsState()
             viewModel.updateScrollPosition(stateScrollList.firstVisibleItemIndex)
+            detailScreenIsShow = rememberSaveable{ mutableStateOf(true) }
 
             //obtenemos el valor booleano para el tema en  general, guardado en Data Store que por defecto es false
             val isDarkTheme =
@@ -121,7 +132,9 @@ class MainActivity : ComponentActivity() {
         NavHost(navController = navController!!, startDestination = Routes.CountDownScreen.route) {
             composable(Routes.CountDownScreen.route) { CountdownScreen(scrollState = scrollState) }
             composable(Routes.SettingsScreen.route) { SettingsScreen(scrollState = scrollState) }
-            composable(Routes.RemindersScreen.route){ RemindersScreen(scrollState=scrollListState)}
+            composable(Routes.RemindersScreen.route){ RemindersScreen(scrollState=scrollListState, navController!!)}
+            composable(Routes.ReminderDetail.route){ ReminderDetail()}
+
         }
     }
 
@@ -130,7 +143,17 @@ class MainActivity : ComponentActivity() {
         val screens = listOf(Routes.CountDownScreen.route,Routes.RemindersScreen.route, Routes.SettingsScreen.route)
         val navBackStackEntry by navController?.currentBackStackEntryAsState()!!
         val currentRoute = navBackStackEntry?.destination?.route
-
+        when(currentRoute){
+            Routes.CountDownScreen.route->detailScreenIsShow.value=true
+            Routes.RemindersScreen.route->detailScreenIsShow.value=true
+            Routes.SettingsScreen.route->detailScreenIsShow.value=true
+            Routes.ReminderDetail.route->detailScreenIsShow.value=false
+        }
+        AnimatedVisibility(
+            visible = detailScreenIsShow.value,
+            enter = slideInVertically(initialOffsetY = { it }),
+            exit = slideOutVertically(targetOffsetY = { it }),
+        ) {
         NavigationBar(
             containerColor = if (localTheme.current.isDark) blackHard else
                 Color(0xfff9f6f9)
@@ -157,6 +180,9 @@ class MainActivity : ComponentActivity() {
                     })
             }
         }
+
+
+    }
     }
 }
 private fun getIcoForScreen(screenName:String): Int {

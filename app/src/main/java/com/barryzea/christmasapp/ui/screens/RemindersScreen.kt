@@ -1,22 +1,26 @@
 package com.barryzea.christmasapp.ui.screens
 
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.barryzea.christmasapp.R
+import com.barryzea.christmasapp.common.Routes
 import com.barryzea.christmasapp.data.model.Reminder
 import com.barryzea.christmasapp.ui.components.ReminderItem
 
@@ -26,23 +30,38 @@ import com.barryzea.christmasapp.ui.components.ReminderItem
  * Created by Barry Zea H. on 21/10/23.
  * Copyright (c)  All rights reserved.
  **/
- 
+ private lateinit var isClicked:MutableState<Boolean>
 @Composable
-fun RemindersScreen(scrollState: LazyStaggeredGridState){
-
-    LazyVerticalStaggeredGrid(
-        modifier=Modifier.fillMaxSize(),
-        state=scrollState,
-        columns = StaggeredGridCells.Fixed(2),
-        contentPadding = PaddingValues(2.dp),
-       /* verticalItemSpacing = 2.dp,
+fun RemindersScreen(scrollState: LazyStaggeredGridState, navController: NavHostController){
+    isClicked = remember {mutableStateOf(false)}
+    if (isClicked.value){
+        navController.navigate(Routes.ReminderDetail.route
+        )
+        isClicked.value=false
+    }
+    Scaffold (floatingActionButton = {newReminderFab()}){paddingValues->
+        LazyVerticalStaggeredGrid(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            state = scrollState,
+            columns = StaggeredGridCells.Fixed(2),
+            contentPadding = PaddingValues(2.dp),
+            /* verticalItemSpacing = 2.dp,
         horizontalArrangement = Arrangement.spacedBy(2.dp)*/
 
-    ){
+        ) {
 
-        items(getItems(),key = {it.id}) {reminderItem->
-            ReminderItem(reminderEntity = reminderItem, onClick ={} )
+            items(getItems(), key = { it.id }) { reminderItem ->
+                ReminderItem(reminderEntity = reminderItem, onClick = {})
+            }
         }
+    }
+}
+@Composable
+fun newReminderFab(){
+    FloatingActionButton(modifier = Modifier.offset(x = -10.dp,  y = -70.dp),onClick = { isClicked.value=true}, ) {
+        Icon(painter = painterResource(id = R.drawable.ic_tree), contentDescription ="add")
     }
 }
 private fun getItems():List<Reminder>{

@@ -16,6 +16,7 @@ val greenMoreSoft = Color(0xE8A3B6A3)
 val greenHard = Color(0xE8469446)
 val salmonRed = Color(0xFFF05454)
 val salmonRedSoft = Color(0xFFEE9595)
+val salmonSoft = Color(0xFFD59E9E)
 val white=Color.White
 
 //custom dark theme colors
