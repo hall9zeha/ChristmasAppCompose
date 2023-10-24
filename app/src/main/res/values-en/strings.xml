@@ -12,4 +12,5 @@
     <string name="christmasNotify">Notificarme antes</string>
     <string name="aboutThis">Acerca de esta app</string>
     <string name="accept">Aceptar</string>
+    <string name="reminder">Recordatorio</string>
 </resources>

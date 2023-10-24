@@ -18,6 +18,8 @@ val salmonRed = Color(0xFFF05454)
 val salmonRedSoft = Color(0xFFEE9595)
 val salmonSoft = Color(0xFFD59E9E)
 val white=Color.White
+val textHintColorLight = Color(0xE8BBBDBB)
+val textHintColorDark = Color(0xFF8D8C8C)
 
 //custom dark theme colors
 

@@ -26,11 +26,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -72,6 +72,8 @@ class MainActivity : ComponentActivity() {
     private lateinit var scrollState: ScrollState
     private lateinit var  stateScrollList:LazyStaggeredGridState
     private lateinit var detailScreenIsShow:MutableState<Boolean>
+    private lateinit var scrollUpState: State<Boolean?>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().apply {
@@ -84,7 +86,7 @@ class MainActivity : ComponentActivity() {
             navController = rememberNavController()
             scrollState = rememberScrollState()
             stateScrollList = rememberLazyStaggeredGridState()
-            val scrollUpState = viewModel.scrollUp.observeAsState()
+            scrollUpState = viewModel.scrollUp.observeAsState()
             viewModel.updateScrollPosition(stateScrollList.firstVisibleItemIndex)
             detailScreenIsShow = rememberSaveable{ mutableStateOf(true) }
 
@@ -109,10 +111,8 @@ class MainActivity : ComponentActivity() {
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             Scaffold(bottomBar = {
-                                if(scrollState.value ==0 && !scrollUpState.value!!){
-                                    BottomNavigationBar(navController = navController!!)
-                                }
-                            }
+                                 BottomNavigationBar(navController = navController!!)
+                             }
                             ) { paddingValues ->
                                 SetUpNavController(scrollState,stateScrollList)
                                 //para evitar que el Scaffold se queje por no usar sus paddingValues usaremos lo siguiente
@@ -132,7 +132,7 @@ class MainActivity : ComponentActivity() {
         NavHost(navController = navController!!, startDestination = Routes.CountDownScreen.route) {
             composable(Routes.CountDownScreen.route) { CountdownScreen(scrollState = scrollState) }
             composable(Routes.SettingsScreen.route) { SettingsScreen(scrollState = scrollState) }
-            composable(Routes.RemindersScreen.route){ RemindersScreen(scrollState=scrollListState, navController!!)}
+            composable(Routes.RemindersScreen.route){ RemindersScreen(scrollState=scrollListState, navController!!, viewModel)}
             composable(Routes.ReminderDetail.route){ ReminderDetail()}
 
         }
@@ -150,7 +150,9 @@ class MainActivity : ComponentActivity() {
             Routes.ReminderDetail.route->detailScreenIsShow.value=false
         }
         AnimatedVisibility(
-            visible = detailScreenIsShow.value,
+            //Si la vista de detalle no esta activa && no se ha desplazado dentro de ninguna vista principal && no se ha desplazado dentro de la lista
+            //de remindersScreen. Entonces el bottomBar será visible
+            visible = detailScreenIsShow.value && scrollState.value ==0 && !scrollUpState.value!!,
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOutVertically(targetOffsetY = { it }),
         ) {
