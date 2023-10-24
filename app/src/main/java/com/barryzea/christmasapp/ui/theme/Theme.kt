@@ -20,13 +20,14 @@ import androidx.core.view.WindowCompat
 import com.barryzea.christmasapp.data.model.DarkTheme
 
 private val DarkColorScheme = darkColorScheme(
-    primary = blackSoftForSurface,
+    primary= salmonRedSoft,
+    onPrimary = blackSoft,
     surfaceVariant= salmonRedSoft,
     background= blackForBackground,
     secondary = salmonRedSoft,
     tertiary = accentColorCustom,
     surface = blackSoft,
-    //onSurface = greenSoft,
+    //onSurface = salmonSoft,
     primaryContainer = salmonSoft,
     //onPrimaryContainer = greenSoft
 

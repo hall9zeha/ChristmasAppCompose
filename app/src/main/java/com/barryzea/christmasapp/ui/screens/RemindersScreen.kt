@@ -49,8 +49,11 @@ fun RemindersScreen(
     val scrollUpState = viewModel.scrollUp.observeAsState()
     val context = LocalContext.current
     if (isClicked.value){
-        navController.navigate(Routes.ReminderDetail.route
-        )
+        //Ya que el argumento lo definimos como opcional podemos hacer uso de las dos formas
+        //sin argumento
+        navController.navigate(Routes.ReminderDetail.route)
+        //con argumento, lo necesitaremos al implementar la base de datos
+        //navController.navigate(Routes.ReminderDetail.createRoute(25))
         isClicked.value=false
     }
 

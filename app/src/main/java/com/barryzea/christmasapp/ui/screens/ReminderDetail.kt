@@ -2,45 +2,48 @@ package com.barryzea.christmasapp.ui.screens
 
 import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.barryzea.christmasapp.R
+import com.barryzea.christmasapp.data.model.Reminder
 import com.barryzea.christmasapp.data.model.localTheme
 import com.barryzea.christmasapp.ui.theme.christmasTypography
 import com.barryzea.christmasapp.ui.theme.textHintColorDark
 import com.barryzea.christmasapp.ui.theme.textHintColorLight
+import java.util.Calendar
 
 
 /**
@@ -50,14 +53,39 @@ import com.barryzea.christmasapp.ui.theme.textHintColorLight
  **/
 
 private lateinit var isBackPressed: MutableState<Boolean>
+private lateinit var showDialog:MutableState<Boolean>
 private lateinit var context:Context
+private lateinit var editTextValue:MutableState<String>
+private lateinit var timeInMillisForSave:MutableState<Long>
+private lateinit var reminderEnable:MutableState<Boolean>
+
+@OptIn(ExperimentalMaterial3Api::class)
+private lateinit var datePickerState:DatePickerState
+
+
 @Composable
-fun ReminderDetail(){
-    var editTextValue by remember {mutableStateOf("")}
+fun ReminderDetail(idReminder: Long?) {
+    //Propiedades para guardar
+    editTextValue = remember {mutableStateOf("")}
+    timeInMillisForSave = rememberSaveable{ mutableLongStateOf(Calendar.getInstance().timeInMillis) }
+    reminderEnable = rememberSaveable{ mutableStateOf(false) }
+
     //Este valor debe ser dinámico si vamos a sobreescribir el evento onBackPressed
     isBackPressed = remember { mutableStateOf(true) }
-
+    showDialog = rememberSaveable{ mutableStateOf(false) }
     context = LocalContext.current
+
+    /*
+    * Capturamos el argumento
+    * */
+    idReminder?.let{id->
+        if(id>0){
+            Toast.makeText(context, "$id", Toast.LENGTH_SHORT).show()
+        }else{
+            Toast.makeText(context, "argumento por defecto $id", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     Scaffold (topBar = {topAppBar()}){
         Box(modifier = Modifier.padding(it)){
             Column {
@@ -71,7 +99,7 @@ fun ReminderDetail(){
                             .fillMaxSize()
                             .background(Color.Transparent)
                             .padding(8.dp),
-                        placeholder={Text("Escribe aquí tu recordatorio")},
+                        placeholder={Text(stringResource(R.string.writeYourReminderHere))},
                         colors= TextFieldDefaults.colors(
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,
@@ -81,23 +109,21 @@ fun ReminderDetail(){
                             focusedPlaceholderColor = if(localTheme.current.isDark) textHintColorDark else textHintColorLight,
                             unfocusedPlaceholderColor = if(localTheme.current.isDark) textHintColorDark else textHintColorLight
                         ),
-                        value =editTextValue,
+                        value =editTextValue.value,
                         onValueChange ={textValue->
-                        editTextValue=textValue
+                        editTextValue.value=textValue
                     }
                         )
                 }
             }
             //Controlamos el evento onBackPressed
             BackHandler (enabled = isBackPressed.value, onBack = {onBack()})
+            //si se hizo click en el ícono calendario del topBar
+            if(showDialog.value) showDatePickerDialog()
         }
     }
 }
-private fun onBack(){
-    Toast.makeText(context, "Guardado correctamente", Toast.LENGTH_SHORT).show()
-    isBackPressed.value=false
 
-}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun topAppBar(){
@@ -105,10 +131,41 @@ fun topAppBar(){
         fontSize=20.sp,
         style = christmasTypography.bodyLarge) },
         actions={
-            IconButton(onClick = { }) {
-                Icon(painter = painterResource(id = R.drawable.ic_calendar),contentDescription = "")
+            IconButton(onClick = {
+                showDialog.value=true
+            }) {
+                Icon(painter = painterResource(id = R.drawable.ic_winter_cal),contentDescription = "")
             }
         })
+}
+private fun saveReminder(){
+    val reminder = Reminder(description= editTextValue.value, timeInMillis = timeInMillisForSave.value, enable = reminderEnable.value)
+    Toast.makeText(context, context.getString(R.string.successfulSave), Toast.LENGTH_SHORT).show()
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun showDatePickerDialog(){
+    datePickerState = rememberDatePickerState(initialSelectedDateMillis = Calendar.getInstance().timeInMillis)
+    DatePickerDialog(onDismissRequest = { showDialog.value=false }, confirmButton = {
+        TextButton(onClick = { showDialog.value = false }) {
+            Text("Ok")
+            timeInMillisForSave.value= datePickerState.selectedDateMillis!!
+            reminderEnable.value=true
+
+        }
+    },
+        dismissButton = {
+            TextButton(onClick = { showDialog.value = false }) {
+                Text(stringResource(id = R.string.cancel))
+            }
+        }){
+        DatePicker(state = datePickerState)
+    }
+
+}
+private fun onBack(){
+    saveReminder()
+    isBackPressed.value=false
 }
 @Preview(
     showBackground = true,
@@ -117,5 +174,6 @@ fun topAppBar(){
 )
 @Composable
 fun preview(){
-    ReminderDetail()
+    ReminderDetail(0
+    )
 }

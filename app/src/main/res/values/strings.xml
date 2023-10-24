@@ -12,4 +12,7 @@
     <string name="aboutThis">Acerca de esta app</string>
     <string name="accept">Aceptar</string>
     <string name="reminder">Recordatorio</string>
+    <string name="cancel">Cancelar</string>
+    <string name="writeYourReminderHere">Escribe aquí tu recordatorio</string>
+    <string name="successfulSave">Guardado correctamente</string>
 </resources>

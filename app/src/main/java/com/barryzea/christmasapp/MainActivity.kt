@@ -42,10 +42,12 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.barryzea.christmasapp.common.Routes
 import com.barryzea.christmasapp.common.preferences.SettingsStore
 import com.barryzea.christmasapp.data.model.DarkTheme
@@ -132,8 +134,11 @@ class MainActivity : ComponentActivity() {
         NavHost(navController = navController!!, startDestination = Routes.CountDownScreen.route) {
             composable(Routes.CountDownScreen.route) { CountdownScreen(scrollState = scrollState) }
             composable(Routes.SettingsScreen.route) { SettingsScreen(scrollState = scrollState) }
-            composable(Routes.RemindersScreen.route){ RemindersScreen(scrollState=scrollListState, navController!!, viewModel)}
-            composable(Routes.ReminderDetail.route){ ReminderDetail()}
+            composable(route=Routes.RemindersScreen.route){ RemindersScreen(scrollState=scrollListState, navController!!, viewModel)}
+            composable(route=Routes.ReminderDetail.route,
+                //para objetos de tipo Long se debe especificar type=NavType.LongType
+                arguments= listOf(navArgument("idReminderArg"){type=NavType.LongType;defaultValue=0})
+            ){entry-> ReminderDetail(entry.arguments?.getLong("idReminderArg",0))}
 
         }
     }
