@@ -26,12 +26,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -54,6 +54,7 @@ import com.barryzea.christmasapp.data.model.DarkTheme
 import com.barryzea.christmasapp.data.model.PrefsEntity
 import com.barryzea.christmasapp.data.model.localTheme
 import com.barryzea.christmasapp.ui.screens.CountdownScreen
+
 import com.barryzea.christmasapp.ui.screens.ReminderDetail
 import com.barryzea.christmasapp.ui.screens.RemindersScreen
 import com.barryzea.christmasapp.ui.screens.SettingsScreen
@@ -71,28 +72,28 @@ class MainActivity : ComponentActivity() {
     val viewModel:MainViewModel by viewModels()
 
     private var navController: NavHostController? = null
-    private lateinit var scrollState: ScrollState
-    private lateinit var  stateScrollList:LazyStaggeredGridState
+    private lateinit var scaffoldScrollState: ScrollState
     private lateinit var detailScreenIsShow:MutableState<Boolean>
-    private lateinit var scrollUpState: State<Boolean?>
+    private lateinit var stateScrollList:LazyStaggeredGridState
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         installSplashScreen().apply {
             setKeepOnScreenCondition{
                 viewModel.loading.value
             }
         }
         setContent {
-
             navController = rememberNavController()
-            scrollState = rememberScrollState()
+            scaffoldScrollState = rememberScrollState()
             stateScrollList = rememberLazyStaggeredGridState()
-            scrollUpState = viewModel.scrollUp.observeAsState()
+            val scrollUpState by  viewModel.scrollUp.collectAsState()
             viewModel.updateScrollPosition(stateScrollList.firstVisibleItemIndex)
-            detailScreenIsShow = rememberSaveable{ mutableStateOf(true) }
+            detailScreenIsShow = remember{ mutableStateOf(true) }
 
-            //obtenemos el valor booleano para el tema en  general, guardado en Data Store que por defecto es false
+           //obtenemos el valor booleano para el tema en  general, guardado en Data Store que por defecto es false
             val isDarkTheme =
                 dataStore.getFromDataStore().collectAsState(PrefsEntity(false)).value.darkTheme
             val darkTheme = DarkTheme(isDarkTheme!!)
@@ -113,10 +114,10 @@ class MainActivity : ComponentActivity() {
                             shape = RoundedCornerShape(16.dp)
                         ) {
                             Scaffold(bottomBar = {
-                                 BottomNavigationBar(navController = navController!!)
+                                 BottomNavigationBar(navController = navController!!, scrollUpState)
                              }
                             ) { paddingValues ->
-                                SetUpNavController(scrollState,stateScrollList)
+                                SetUpNavController(scaffoldScrollState,stateScrollList)
                                 //para evitar que el Scaffold se queje por no usar sus paddingValues usaremos lo siguiente
                                 Column(modifier = Modifier.padding(paddingValues)) {}
                             }
@@ -130,24 +131,33 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun SetUpNavController(scrollState: ScrollState, scrollListState: LazyStaggeredGridState) {
+    fun SetUpNavController(
+        scrollState: ScrollState,
+        scrollListState: LazyStaggeredGridState,
+
+    ) {
+
         NavHost(navController = navController!!, startDestination = Routes.CountDownScreen.route) {
             composable(Routes.CountDownScreen.route) { CountdownScreen(scrollState = scrollState) }
             composable(Routes.SettingsScreen.route) { SettingsScreen(scrollState = scrollState) }
-            composable(route=Routes.RemindersScreen.route){ RemindersScreen(scrollState=scrollListState, navController!!, viewModel)}
+            composable(route=Routes.RemindersScreen.route){ RemindersScreen(scrollState=scrollListState,navController!!, viewModel)}
             composable(route=Routes.ReminderDetail.route,
                 //para objetos de tipo Long se debe especificar type=NavType.LongType
                 arguments= listOf(navArgument("idReminderArg"){type=NavType.LongType;defaultValue=0})
-            ){entry-> ReminderDetail(entry.arguments?.getLong("idReminderArg",0))}
-
+            ){entry-> ReminderDetail(mainViewModel = viewModel, idReminder = entry.arguments?.getLong("idReminderArg",0))}
         }
     }
 
     @Composable
-    fun BottomNavigationBar(navController: NavController) {
-        val screens = listOf(Routes.CountDownScreen.route,Routes.RemindersScreen.route, Routes.SettingsScreen.route)
+    fun BottomNavigationBar(
+        navController: NavController,
+        scrollUpState: Boolean?,
+
+    ) {
+        val screens = listOf(Routes.CountDownScreen.route,Routes.RemindersScreen.route,Routes.SettingsScreen.route)
         val navBackStackEntry by navController?.currentBackStackEntryAsState()!!
         val currentRoute = navBackStackEntry?.destination?.route
+
         when(currentRoute){
             Routes.CountDownScreen.route->detailScreenIsShow.value=true
             Routes.RemindersScreen.route->detailScreenIsShow.value=true
@@ -157,7 +167,7 @@ class MainActivity : ComponentActivity() {
         AnimatedVisibility(
             //Si la vista de detalle no esta activa && no se ha desplazado dentro de ninguna vista principal && no se ha desplazado dentro de la lista
             //de remindersScreen. Entonces el bottomBar será visible
-            visible = detailScreenIsShow.value && scrollState.value ==0 && !scrollUpState.value!!,
+            visible = (detailScreenIsShow.value && scaffoldScrollState.value ==0 && !scrollUpState!!),
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOutVertically(targetOffsetY = { it }),
         ) {
@@ -198,6 +208,7 @@ private fun getIcoForScreen(screenName:String): Int {
         "Reminders"->R.drawable.ic_box_gift
         "Settings" -> R.drawable.ic_snowflake
         else -> R.drawable.ic_tree
+
     }
 }
 @Preview(showBackground = true)

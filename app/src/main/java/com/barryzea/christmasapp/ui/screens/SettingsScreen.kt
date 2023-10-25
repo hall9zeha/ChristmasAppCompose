@@ -61,6 +61,7 @@ fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: S
             //todo crear un diálogo para explicar la necesidad de estos permisos
         }
     }
+
     openAlertDialog = remember { mutableStateOf(false) }
     isClicked=remember{ mutableStateOf(false) }
     if (isClicked.value) showDialog()

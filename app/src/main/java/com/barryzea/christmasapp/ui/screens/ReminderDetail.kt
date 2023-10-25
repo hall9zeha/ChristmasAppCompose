@@ -2,6 +2,7 @@ package com.barryzea.christmasapp.ui.screens
 
 import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -37,12 +38,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.barryzea.christmasapp.R
 import com.barryzea.christmasapp.data.model.Reminder
 import com.barryzea.christmasapp.data.model.localTheme
 import com.barryzea.christmasapp.ui.theme.christmasTypography
 import com.barryzea.christmasapp.ui.theme.textHintColorDark
 import com.barryzea.christmasapp.ui.theme.textHintColorLight
+import com.barryzea.christmasapp.ui.viewModel.MainViewModel
 import java.util.Calendar
 
 
@@ -64,7 +67,7 @@ private lateinit var datePickerState:DatePickerState
 
 
 @Composable
-fun ReminderDetail(idReminder: Long?) {
+fun ReminderDetail(mainViewModel: MainViewModel, idReminder: Long?) {
     //Propiedades para guardar
     editTextValue = remember {mutableStateOf("")}
     timeInMillisForSave = rememberSaveable{ mutableLongStateOf(Calendar.getInstance().timeInMillis) }
@@ -80,9 +83,9 @@ fun ReminderDetail(idReminder: Long?) {
     * */
     idReminder?.let{id->
         if(id>0){
-            Toast.makeText(context, "$id", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(context, "$id", Toast.LENGTH_SHORT).show()
         }else{
-            Toast.makeText(context, "argumento por defecto $id", Toast.LENGTH_SHORT).show()
+            Log.e("argumento por default", "$id")
         }
     }
 
@@ -117,7 +120,7 @@ fun ReminderDetail(idReminder: Long?) {
                 }
             }
             //Controlamos el evento onBackPressed
-            BackHandler (enabled = isBackPressed.value, onBack = {onBack()})
+            BackHandler (enabled = isBackPressed.value, onBack = {onBack(mainViewModel)})
             //si se hizo click en el ícono calendario del topBar
             if(showDialog.value) showDatePickerDialog()
         }
@@ -138,9 +141,11 @@ fun topAppBar(){
             }
         })
 }
-private fun saveReminder(){
+
+private fun saveReminder( mainViewModel: MainViewModel) {
     val reminder = Reminder(description= editTextValue.value, timeInMillis = timeInMillisForSave.value, enable = reminderEnable.value)
     Toast.makeText(context, context.getString(R.string.successfulSave), Toast.LENGTH_SHORT).show()
+    mainViewModel.setIdInserted(26)
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -163,8 +168,9 @@ fun showDatePickerDialog(){
     }
 
 }
-private fun onBack(){
-    saveReminder()
+private fun onBack(mainViewModel: MainViewModel) {
+    saveReminder(mainViewModel)
+
     isBackPressed.value=false
 }
 @Preview(
@@ -174,6 +180,7 @@ private fun onBack(){
 )
 @Composable
 fun preview(){
-    ReminderDetail(0
-    )
+   /* ReminderDetail(0
+
+    )*/
 }

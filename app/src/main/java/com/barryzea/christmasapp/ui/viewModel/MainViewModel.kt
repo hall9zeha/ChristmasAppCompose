@@ -1,6 +1,7 @@
 package com.barryzea.christmasapp.ui.viewModel
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.cancellable
 import kotlinx.coroutines.flow.catch
@@ -36,8 +38,11 @@ class MainViewModel @Inject constructor(private val repository:MainRepository):V
 
     //ScrollState para reminderScreen
     private var lastScrollIndex =0
-    private val _scrollUp = MutableLiveData(false)
-    val scrollUp:LiveData<Boolean> get() = _scrollUp
+    private val _scrollUp = MutableStateFlow(false)
+    val scrollUp:StateFlow<Boolean> get() = _scrollUp.asStateFlow()
+
+    private var _idInserted = MutableStateFlow<Long>(0)
+    val idInserted: StateFlow<Long> = _idInserted.asStateFlow()
 
 
     //Inicializamos el valor de loading en true para mostrar el splash screen
@@ -61,5 +66,7 @@ class MainViewModel @Inject constructor(private val repository:MainRepository):V
         _scrollUp.value = newScrollIndex > lastScrollIndex
         lastScrollIndex = newScrollIndex
     }
-
+    fun setIdInserted(id:Long){
+        _idInserted.value=id
+    }
 }
