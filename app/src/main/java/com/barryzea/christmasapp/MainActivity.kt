@@ -1,6 +1,7 @@
 package com.barryzea.christmasapp
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -89,13 +90,12 @@ class MainActivity : ComponentActivity() {
             navController = rememberNavController()
             scaffoldScrollState = rememberScrollState()
             stateScrollList = rememberLazyStaggeredGridState()
-            val scrollUpState by  viewModel.scrollUp.collectAsState()
+            val scrollUpState by  viewModel.scrollUp.observeAsState()
             viewModel.updateScrollPosition(stateScrollList.firstVisibleItemIndex)
             detailScreenIsShow = remember{ mutableStateOf(true) }
 
            //obtenemos el valor booleano para el tema en  general, guardado en Data Store que por defecto es false
-            val isDarkTheme =
-                dataStore.getFromDataStore().collectAsState(PrefsEntity(false)).value.darkTheme
+            val isDarkTheme =  dataStore.getFromDataStore().collectAsState(PrefsEntity(false)).value.darkTheme
             val darkTheme = DarkTheme(isDarkTheme!!)
             //lo guardamos en el LocalProvider para que sea accecible en toda la app sin tener que llamar las
             //preferencias nuevamente
@@ -119,7 +119,7 @@ class MainActivity : ComponentActivity() {
                             ) { paddingValues ->
                                 SetUpNavController(scaffoldScrollState,stateScrollList)
                                 //para evitar que el Scaffold se queje por no usar sus paddingValues usaremos lo siguiente
-                                Column(modifier = Modifier.padding(paddingValues)) {}
+                               Column(modifier = Modifier.padding(paddingValues)) {}
                             }
                         }
 
@@ -157,6 +157,7 @@ class MainActivity : ComponentActivity() {
         val screens = listOf(Routes.CountDownScreen.route,Routes.RemindersScreen.route,Routes.SettingsScreen.route)
         val navBackStackEntry by navController?.currentBackStackEntryAsState()!!
         val currentRoute = navBackStackEntry?.destination?.route
+        val isVisible = (detailScreenIsShow.value && scaffoldScrollState.value ==0 && !scrollUpState!!)
 
         when(currentRoute){
             Routes.CountDownScreen.route->detailScreenIsShow.value=true
@@ -167,7 +168,7 @@ class MainActivity : ComponentActivity() {
         AnimatedVisibility(
             //Si la vista de detalle no esta activa && no se ha desplazado dentro de ninguna vista principal && no se ha desplazado dentro de la lista
             //de remindersScreen. Entonces el bottomBar será visible
-            visible = (detailScreenIsShow.value && scaffoldScrollState.value ==0 && !scrollUpState!!),
+            visible = isVisible,
             enter = slideInVertically(initialOffsetY = { it }),
             exit = slideOutVertically(targetOffsetY = { it }),
         ) {

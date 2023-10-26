@@ -44,7 +44,7 @@ fun RemindersScreen(
    viewModel: MainViewModel
 ){
     //FIXME corregir la recomposición contínua de esta pantalla al desplazarse en la lista de elementos, y al cargar una primera vez
-    //Toast.makeText(LocalContext.current, "compose", Toast.LENGTH_SHORT).show()
+
     goToDetail = remember {mutableStateOf(false)}
     Log.e("TAG", "RemindersScreen" )
     val idInserted by viewModel.idInserted.collectAsState()
@@ -52,21 +52,22 @@ fun RemindersScreen(
         Toast.makeText(LocalContext.current, "${idInserted}", Toast.LENGTH_SHORT).show()
     }
     //obtenemos el valor booleano al desplazarnos por la lista de elementos, actualizada en el ViewModelMain en MainActivity
-   val scrollUpState  by viewModel.scrollUp.collectAsState()
+   val scrollUpState  by viewModel.scrollUp.observeAsState()
+
     val context = LocalContext.current
    if (goToDetail.value){
         //Ya que el argumento lo definimos como opcional podemos hacer uso de las dos formas
         //sin argumento
         //navController.navigate(Routes.ReminderDetail.route)
         //con argumento, lo necesitaremos al implementar la base de datos
-        navController.navigate(Routes.ReminderDetail.createRoute(25))
+       navController.navigate(Routes.ReminderDetail.createRoute(25))
         goToDetail.value=false
     }
-
-    Scaffold (floatingActionButton = {newReminderFab(!scrollUpState!!)}){paddingValues->
+     Scaffold (floatingActionButton = {newReminderFab(!scrollUpState!!)}){paddingValues->
         RemindersList(scrollState = scrollState, paddingValues)
     }
 }
+
 @Composable
 fun newReminderFab(isVisible:Boolean){
     AnimatedVisibility(visible =isVisible,

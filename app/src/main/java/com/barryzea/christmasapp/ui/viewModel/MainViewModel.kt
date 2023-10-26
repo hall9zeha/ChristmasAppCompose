@@ -1,6 +1,7 @@
 package com.barryzea.christmasapp.ui.viewModel
 
 import android.util.Log
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -38,14 +39,12 @@ class MainViewModel @Inject constructor(private val repository:MainRepository):V
 
     //ScrollState para reminderScreen
     private var lastScrollIndex =0
-    private val _scrollUp = MutableStateFlow(false)
-    val scrollUp:StateFlow<Boolean> get() = _scrollUp.asStateFlow()
+    private val _scrollUp = MutableLiveData(false)
+    val scrollUp:LiveData<Boolean> = _scrollUp
 
     private var _idInserted = MutableStateFlow<Long>(0)
     val idInserted: StateFlow<Long> = _idInserted.asStateFlow()
-
-
-    //Inicializamos el valor de loading en true para mostrar el splash screen
+     //Inicializamos el valor de loading en true para mostrar el splash screen
     init{
         viewModelScope.launch {
             //Le damos un retraso de 2 segundos para luego mostrar la pantalla principal
