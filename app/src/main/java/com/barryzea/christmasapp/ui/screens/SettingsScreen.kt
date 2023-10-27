@@ -1,19 +1,12 @@
 package com.barryzea.christmasapp.ui.screens
 
-import android.Manifest
-import android.os.Build
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -21,26 +14,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.barryzea.christmasapp.MyApp
 import com.barryzea.christmasapp.R
-import com.barryzea.christmasapp.common.checkPermissions
-import com.barryzea.christmasapp.common.getDatetimeWithoutHours
-import com.barryzea.christmasapp.common.setAlarm
 import com.barryzea.christmasapp.data.model.PrefsEntity
-import com.barryzea.christmasapp.data.model.Reminder
 import com.barryzea.christmasapp.ui.components.AlertDialogCustom
 import com.barryzea.christmasapp.ui.components.ClickablePref
 import com.barryzea.christmasapp.ui.components.SwitchCustomPref
 import com.barryzea.christmasapp.ui.viewModel.SettingsViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.Calendar
 
 
 /**
@@ -52,7 +35,7 @@ import java.util.Calendar
 private lateinit  var openAlertDialog:MutableState<Boolean>
 private lateinit  var isClicked:MutableState<Boolean>
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: ScrollState){
+fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel()/*, scrollState: ScrollState*/){
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission() ){
         if(it){
             isGranted()
@@ -64,7 +47,7 @@ fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: S
 
     openAlertDialog = remember { mutableStateOf(false) }
     isClicked=remember{ mutableStateOf(false) }
-    if (isClicked.value) showDialog()
+    if (isClicked.value) ShowDialog()
 
     var stateSwitch = viewModel.isSwitchOn.collectAsState(false)
     var stateNotify = viewModel.notifyAllow.collectAsState(false)
@@ -72,7 +55,7 @@ fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: S
         Column(modifier= Modifier
             .padding(it)
             .padding(16.dp)
-            .verticalScroll(scrollState)){
+            /*.verticalScroll(scrollState)*/){
             Text(text = "Configuración", fontSize = 20.sp,modifier= Modifier.align(Alignment.CenterHorizontally))
            SwitchCustomPref(
                icon =R.drawable.ic_christmas_stars,
@@ -129,7 +112,7 @@ fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel(), scrollState: S
 
 }
 @Composable
-private fun showDialog(){
+private fun ShowDialog(){
     AlertDialogCustom(onDismissRequest = { openAlertDialog.value =false; isClicked.value=false}, onConfirmation = {
         openAlertDialog.value = false
         isClicked.value=false
@@ -144,5 +127,5 @@ fun isGranted(){
 )
 @Composable
 fun SettingsPreview(){
-    SettingsScreen(scrollState = rememberScrollState())
+    SettingsScreen(/*scrollState = rememberScrollState()*/)
 }

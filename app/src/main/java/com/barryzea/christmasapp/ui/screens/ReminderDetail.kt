@@ -67,7 +67,7 @@ private lateinit var datePickerState:DatePickerState
 
 
 @Composable
-fun ReminderDetail(mainViewModel: MainViewModel, idReminder: Long?) {
+fun ReminderDetail(mainViewModel: MainViewModel = hiltViewModel(), idReminder: Long?, upPress:()->Unit) {
     //Propiedades para guardar
     editTextValue = remember {mutableStateOf("")}
     timeInMillisForSave = rememberSaveable{ mutableLongStateOf(Calendar.getInstance().timeInMillis) }
@@ -89,7 +89,7 @@ fun ReminderDetail(mainViewModel: MainViewModel, idReminder: Long?) {
         }
     }
 
-    Scaffold (topBar = {topAppBar()}){
+    Scaffold (topBar = { TopAppBar() }){
         Box(modifier = Modifier.padding(it)){
             Column {
                 Row (
@@ -120,16 +120,16 @@ fun ReminderDetail(mainViewModel: MainViewModel, idReminder: Long?) {
                 }
             }
             //Controlamos el evento onBackPressed
-            BackHandler (enabled = isBackPressed.value, onBack = {onBack(mainViewModel)})
+            BackHandler (enabled = isBackPressed.value, onBack = {upPress()/*onBack(mainViewModel)*/})
             //si se hizo click en el ícono calendario del topBar
-            if(showDialog.value) showDatePickerDialog()
+            if(showDialog.value) ShowDatePickerDialog()
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun topAppBar(){
+fun TopAppBar(){
     TopAppBar(title = { Text(text = stringResource(R.string.reminder),
         fontSize=20.sp,
         style = christmasTypography.bodyLarge) },
@@ -149,7 +149,7 @@ private fun saveReminder( mainViewModel: MainViewModel) {
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun showDatePickerDialog(){
+fun ShowDatePickerDialog(){
     datePickerState = rememberDatePickerState(initialSelectedDateMillis = Calendar.getInstance().timeInMillis)
     DatePickerDialog(onDismissRequest = { showDialog.value=false }, confirmButton = {
         TextButton(onClick = { showDialog.value = false }) {
@@ -170,7 +170,6 @@ fun showDatePickerDialog(){
 }
 private fun onBack(mainViewModel: MainViewModel) {
     saveReminder(mainViewModel)
-
     isBackPressed.value=false
 }
 @Preview(
@@ -179,7 +178,7 @@ private fun onBack(mainViewModel: MainViewModel) {
     uiMode = UI_MODE_NIGHT_YES
 )
 @Composable
-fun preview(){
+fun Preview(){
    /* ReminderDetail(0
 
     )*/

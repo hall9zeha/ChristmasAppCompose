@@ -64,10 +64,10 @@ private lateinit var fontFamily:FontFamily
 private lateinit var viewModel:MainViewModel
 
 @Composable
-fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel(), scrollState:ScrollState){
+fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
     viewModel =mainViewModel
     //val christmasFont=GoogleFont("Mountains of Christmas")//El nombre de la fuente que queremos descargar
-
+    val scrollState = rememberScrollState()
     //La configuramos para ponerla al elemento Texto posteriormente
     /*fontFamily = FontFamily(Font(googleFont=christmasFont,
         fontProvider=getFontProviders(),
@@ -190,8 +190,10 @@ fun ItsNotChristmasYet(response:CountdownEntity, modifier:Modifier){
                 .shadow(2.dp)
                 // .height(80.dp)
                 .wrapContentHeight()
-                .background(color = if(localTheme.current.isDark) greenHard else
-                Color(0xFFF05454))
+                .background(
+                    color = if (localTheme.current.isDark) greenHard else
+                        Color(0xFFF05454)
+                )
         ) {
 
             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {

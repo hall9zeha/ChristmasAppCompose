@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import com.barryzea.christmasapp.data.model.Reminder
 
@@ -20,27 +22,23 @@ import com.barryzea.christmasapp.data.model.Reminder
  **/
 
 @Composable
-fun RemindersList(scrollState: LazyStaggeredGridState, paddingValues: PaddingValues,) {
+fun RemindersList(
+    itemList: List<Reminder>,
+    scrollState: LazyStaggeredGridState,
+    nestedScrollConnection: NestedScrollConnection,
+    paddingValues: PaddingValues,) {
     LazyVerticalStaggeredGrid(
     modifier = Modifier
     .fillMaxSize()
-    .padding(paddingValues),
+    .padding(paddingValues)
+    .nestedScroll(nestedScrollConnection),
     state = scrollState,
     columns = StaggeredGridCells.Fixed(2),
     contentPadding = PaddingValues(2.dp)
     ) {
-        items(getItems(), key = { it.id }) { reminderItem ->
+        items(itemList, key = { it.id }) { reminderItem ->
             ReminderItem(reminderEntity = reminderItem, onClick = {})
         }
 
     }
-}
-
-private fun getItems():List<Reminder>{
-    val itemList= mutableListOf<Reminder>()
-    for(i in 1 until 20){
-        itemList.add(Reminder(i.toLong(),"contenido recordatorio de prueba N° $i".repeat(i)))
-    }
-    return itemList
-
 }

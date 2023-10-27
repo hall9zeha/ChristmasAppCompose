@@ -44,7 +44,8 @@ class MainViewModel @Inject constructor(private val repository:MainRepository):V
 
     private var _idInserted = MutableStateFlow<Long>(0)
     val idInserted: StateFlow<Long> = _idInserted.asStateFlow()
-     //Inicializamos el valor de loading en true para mostrar el splash screen
+
+    //Inicializamos el valor de loading en true para mostrar el splash screen
     init{
         viewModelScope.launch {
             //Le damos un retraso de 2 segundos para luego mostrar la pantalla principal
@@ -68,4 +69,5 @@ class MainViewModel @Inject constructor(private val repository:MainRepository):V
     fun setIdInserted(id:Long){
         _idInserted.value=id
     }
+
 }
