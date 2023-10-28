@@ -149,80 +149,6 @@ class MainActivity : ComponentActivity() {
         }
 
 }
-
-@Composable
-    fun SetUpNavController(
-        scrollState: ScrollState,
-        scrollListState: LazyStaggeredGridState,
-
-    ) {
-
-        NavHost(navController = navController!!, startDestination = Routes.CountDownScreen.route) {
-            composable(Routes.CountDownScreen.route) { CountdownScreen(/*scrollState = scrollState*/) }
-            composable(Routes.SettingsScreen.route) { SettingsScreen(/*scrollState = scrollState*/) }
-            //composable(route=Routes.RemindersScreen.route){ RemindersScreen(/*scrollState=scrollListState,navController!!, viewModel*/)}
-            composable(route=Routes.ReminderDetail.route,
-                //para objetos de tipo Long se debe especificar type=NavType.LongType
-                arguments= listOf(navArgument("idReminderArg"){type=NavType.LongType;defaultValue=0})
-            ){entry-> /*ReminderDetail(mainViewModel = viewModel, idReminder = entry.arguments?.getLong("idReminderArg",0))*/}
-        }
-    }
-
-    @Composable
-    fun BottomNavigationBar(
-        navController: NavController,
-        scrollUpState: Boolean?,
-
-    ) {
-        val screens = listOf(Routes.CountDownScreen.route,Routes.RemindersScreen.route,Routes.SettingsScreen.route)
-        val navBackStackEntry by navController?.currentBackStackEntryAsState()!!
-        val currentRoute = navBackStackEntry?.destination?.route
-        val isVisible = (detailScreenIsShow.value && scaffoldScrollState.value ==0 && !scrollUpState!!)
-
-        when(currentRoute){
-            Routes.CountDownScreen.route->detailScreenIsShow.value=true
-            Routes.RemindersScreen.route->detailScreenIsShow.value=true
-            Routes.SettingsScreen.route->detailScreenIsShow.value=true
-            Routes.ReminderDetail.route->detailScreenIsShow.value=false
-        }
-        AnimatedVisibility(
-            //Si la vista de detalle no esta activa && no se ha desplazado dentro de ninguna vista principal && no se ha desplazado dentro de la lista
-            //de remindersScreen. Entonces el bottomBar será visible
-            visible = isVisible,
-            enter = slideInVertically(initialOffsetY = { it }),
-            exit = slideOutVertically(targetOffsetY = { it }),
-        ) {
-        NavigationBar(
-            containerColor = if (localTheme.current.isDark) blackHard else
-                Color(0xfff9f6f9)
-        ) {
-            screens.forEach { screen ->
-                NavigationBarItem(selected = currentRoute == screen,
-                    modifier = Modifier.padding(8.dp),
-                    onClick = {
-                        navController?.navigate(screen) {
-                            navController?.graph?.startDestinationRoute?.let { screen_route ->
-                                popUpTo(screen_route) {
-                                    saveState = true
-                                }
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                    icon = {
-                        Icon(
-                            painterResource(getIcoForScreen(screenName = screen)),
-                            contentDescription = ""
-                        )
-                    })
-            }
-        }
-
-
-    }
-    }
-}
 @Composable
 fun BottomBar(
     tabs: Array<BottomBarTab>,
@@ -262,4 +188,5 @@ private fun getIcoForScreen(screenName:String): Int {
 fun GreetingPreview() {
     ChristmasAppTheme {
     }
+}
 }

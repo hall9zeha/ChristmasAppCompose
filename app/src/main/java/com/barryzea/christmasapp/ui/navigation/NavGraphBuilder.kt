@@ -12,8 +12,8 @@ import com.barryzea.christmasapp.common.BottomBarTab
  * Copyright (c)  All rights reserved.
  **/
 
-fun NavGraphBuilder.navGraph(onReminderItemSelected:(Long,NavBackStackEntry)->Unit,
-                             upPress:()->Unit) {
+fun NavGraphBuilder.navGraph(onReminderItemSelected:(Long?,NavBackStackEntry)->Unit,
+                             upPress:(idInserted:Long?)->Unit) {
     navigation(
         route = COUNTDOWN_GRAPH,
         startDestination = BottomBarTab.COUNTDOWN.route

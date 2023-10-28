@@ -26,14 +26,14 @@ object RemindersDestinations{
     const val REMINDER_ITEM_ROUTE = "item"
     const val REMINDER_ITEM_ID_KEY = "itemId"
 }
-fun NavGraphBuilder.addRemindersGraph(onReminderItemSelected:(Long, NavBackStackEntry)->Unit,
-                                      upPress:()->Unit) {
+fun NavGraphBuilder.addRemindersGraph(onReminderItemSelected:(Long?, NavBackStackEntry)->Unit,
+                                      upPress:(idInserted:Long?)->Unit) {
     composable(BottomBarTab.REMINDERS.route) {from->
-        RemindersScreen(onItemClick = {id->onReminderItemSelected(id,from)})
+        RemindersScreen(onItemClick = {id->onReminderItemSelected(id?:0,from)}, navBackStackEntry= from)
     }
     composable(
         route="$REMINDER_ITEM_ROUTE/{${REMINDER_ITEM_ID_KEY}}",
-        arguments= listOf(navArgument(REMINDER_ITEM_ID_KEY){type = NavType.LongType} )
+        arguments= listOf(navArgument(REMINDER_ITEM_ID_KEY){type = NavType.LongType;defaultValue=0})
     ){backStackEntry->
         val arguments = requireNotNull(backStackEntry.arguments)
         val itemId = arguments.getLong(REMINDER_ITEM_ID_KEY)

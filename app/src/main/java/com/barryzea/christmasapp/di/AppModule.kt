@@ -3,7 +3,10 @@ package com.barryzea.christmasapp.di
 import android.app.Application
 import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.barryzea.christmasapp.common.preferences.SettingsStore
+import com.barryzea.christmasapp.data.database.ReminderDatabase
 import com.barryzea.christmasapp.data.repository.MainRepository
 import com.barryzea.christmasapp.data.repository.MainRepositoryImpl
 import dagger.Binds
@@ -27,7 +30,18 @@ class AppModule {
   @Singleton
   @Provides
   fun contextProvides(app:Application):Context = app.applicationContext
+
+  @Singleton
+  @Provides
+  fun databaseProvides(app: Application)= Room.databaseBuilder(
+      app.applicationContext,
+      ReminderDatabase::class.java,
+      "ReminderDb")
+      .fallbackToDestructiveMigration()
+      .build()
 }
+
+
 
 @Module
 @InstallIn(SingletonComponent::class)

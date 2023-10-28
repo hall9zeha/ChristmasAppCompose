@@ -22,7 +22,7 @@ import kotlinx.coroutines.CoroutineScope
  * Copyright (c)  All rights reserved.
  **/
 
-
+const val ID_INSERTED_KEY="idInsertedKey"
 @Composable
 fun rememberAppState(
 
@@ -43,7 +43,8 @@ class AppState(val navController:NavHostController) {
   val currentRoute:String?
     get() = navController.currentDestination?.route
 
-  fun upPress(){
+  fun upPress(idInserted:Long?){
+    navController.previousBackStackEntry?.savedStateHandle?.set(ID_INSERTED_KEY,idInserted)
     navController.navigateUp()
   }
 
@@ -58,7 +59,7 @@ class AppState(val navController:NavHostController) {
       }
     }
   }
-  fun navigateToReminderItemDetail(itemId:Long, from:NavBackStackEntry){
+  fun navigateToReminderItemDetail(itemId:Long?, from:NavBackStackEntry){
     if(from.lifecycleIsResumed()){
       navController.navigate("${REMINDER_ITEM_ROUTE}/${itemId}")
     }

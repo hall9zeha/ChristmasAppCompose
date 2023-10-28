@@ -26,7 +26,9 @@ fun RemindersList(
     itemList: List<Reminder>,
     scrollState: LazyStaggeredGridState,
     nestedScrollConnection: NestedScrollConnection,
-    paddingValues: PaddingValues,) {
+    paddingValues: PaddingValues,
+    onItemClick:(reminder:Reminder)->Unit,
+    onDeleteClick:(reminder:Reminder)->Unit) {
     LazyVerticalStaggeredGrid(
     modifier = Modifier
     .fillMaxSize()
@@ -37,7 +39,7 @@ fun RemindersList(
     contentPadding = PaddingValues(2.dp)
     ) {
         items(itemList, key = { it.id }) { reminderItem ->
-            ReminderItem(reminderEntity = reminderItem, onClick = {})
+            ReminderItem(reminderEntity = reminderItem, onClick = {reminder->onItemClick(reminder)}, onDeleteClick={reminder->onDeleteClick(reminder)})
         }
 
     }

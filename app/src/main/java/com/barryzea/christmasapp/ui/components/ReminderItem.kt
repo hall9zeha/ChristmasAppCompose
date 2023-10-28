@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -31,7 +32,7 @@ import com.barryzea.christmasapp.data.model.Reminder
  **/
  
 @Composable
-fun ReminderItem(reminderEntity:Reminder, onClick:(Reminder)->Unit){
+fun ReminderItem(reminderEntity:Reminder, onClick:(Reminder)->Unit, onDeleteClick:(reminder:Reminder)->Unit){
     Card(elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -46,7 +47,9 @@ fun ReminderItem(reminderEntity:Reminder, onClick:(Reminder)->Unit){
             .padding(8.dp) )
         Spacer(Modifier.size(8.dp))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-            Icon(painter = painterResource(id = R.drawable.ic_delete), contentDescription ="delete reminder icon" )
+            IconButton(onClick = {onDeleteClick(reminderEntity)}) {
+                Icon(painter = painterResource(id = R.drawable.ic_delete), contentDescription ="delete reminder icon")
+            }
         }
         Spacer(modifier = Modifier.size(4.dp))
     }
@@ -56,5 +59,5 @@ fun ReminderItem(reminderEntity:Reminder, onClick:(Reminder)->Unit){
 )
 @Composable
 fun PreviewItem(){
-    ReminderItem(reminderEntity = Reminder(description = "prueba de contenido de cardview item reminder"), onClick ={} )
+    ReminderItem(reminderEntity = Reminder(id=0,description = "prueba de contenido de cardview item reminder"), onClick ={} , onDeleteClick = {})
 }
