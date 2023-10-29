@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 interface MainRepository {
     suspend fun  getChristmasCountdown():Flow<CountdownEntity>
     suspend fun saveReminder(reminder:Reminder):Long
+    suspend fun updateReminder(reminder: Reminder):Int
     suspend fun deleteReminder(idReminder:Long)
     suspend fun getReminderById(idReminder:Long):Reminder
     suspend fun getAllReminders():MutableList<Reminder>

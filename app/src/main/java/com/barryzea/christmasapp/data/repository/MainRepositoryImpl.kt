@@ -31,6 +31,8 @@ class MainRepositoryImpl @Inject constructor(reminderDb: ReminderDatabase) :Main
     }
     override suspend fun saveReminder(reminder: Reminder)=db.saveReminder(reminder)
     override suspend fun deleteReminder(idReminder: Long) = db.deleteReminder(idReminder)
+    override suspend fun updateReminder(reminder: Reminder) = db.updateReminder(reminder)
+
     override suspend fun getReminderById(idReminder: Long)=db.getReminderById(idReminder)
     override suspend fun getAllReminders()=db.getAllReminders()
 }

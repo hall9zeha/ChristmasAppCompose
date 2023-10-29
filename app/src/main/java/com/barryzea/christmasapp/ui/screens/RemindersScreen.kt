@@ -1,11 +1,9 @@
 package com.barryzea.christmasapp.ui.screens
 
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -15,7 +13,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -39,11 +36,11 @@ import com.barryzea.christmasapp.ui.viewModel.ReminderViewModel
  * Copyright (c)  All rights reserved.
  **/
 
+
 @Composable
 fun RemindersScreen(
     onItemClick:(Long?)->Unit,
     navBackStackEntry: NavBackStackEntry,
-    scrollState: LazyStaggeredGridState = rememberLazyStaggeredGridState(),
     viewModel: ReminderViewModel = hiltViewModel()
 ){
 
@@ -55,17 +52,20 @@ fun RemindersScreen(
 * que no es componible debemos ejecutar dicho código dentro de un contexto de corrutina como "LunchedEffect"
 * que se ejecuta una sola vez  guardando su estado y no se vuelve a ejecutar a menos que cambie su llave.
 * */
-    val reminderList  by viewModel.reminderList.collectAsState(listOf())
 
+    val reminderList  by viewModel.reminderList.collectAsState(listOf())
+    Log.e("TAG", "Fuera de corrutina")
     LaunchedEffect(key1 = true) {
         viewModel.getAllReminders()
         Log.e("TAG", "RemindersScreen")
         if(navBackStackEntry?.savedStateHandle?.contains(ID_INSERTED_KEY) == true){
             val id=navBackStackEntry.savedStateHandle!!.get<Long>(ID_INSERTED_KEY)
-            Toast.makeText( context,id.toString(), Toast.LENGTH_SHORT).show()
+            fetchUpdatedItem(id!!, viewModel)
             navBackStackEntry.savedStateHandle.remove<Long>(ID_INSERTED_KEY)
         }
     }
+    val reminderById by  viewModel.reminderById.observeAsState()
+    RefreshItemInList(reminderById, viewModel)
 
     val fabVisibility= rememberSaveable{
         mutableStateOf(true)
@@ -79,6 +79,7 @@ fun RemindersScreen(
             }
         }
     }
+    val scrollState = rememberLazyStaggeredGridState()
      Scaffold (floatingActionButton = {NewReminderFab(fabVisibility.value, onItemClick)}){ paddingValues->
         RemindersList(reminderList, scrollState = scrollState,
             nestedScrollConnection,
@@ -89,8 +90,19 @@ fun RemindersScreen(
 }
 fun deleteReminder(reminder: Reminder, viewModel: ReminderViewModel){
     viewModel.deleteReminder(reminder)
+}
 
-  }
+@Composable
+fun RefreshItemInList(reminder:Reminder?, viewModel: ReminderViewModel){
+    reminder?.let{
+        LaunchedEffect(key1 = true) {
+            viewModel.updateReminderList(it!!)
+        }
+    }
+}
+fun fetchUpdatedItem(idReminder:Long, viewModel: ReminderViewModel){
+    viewModel.getReminderById(idReminder)
+}
 @Composable
 fun NewReminderFab(isVisible: Boolean, onItemClick: (Long?) -> Unit){
     AnimatedVisibility(visible =isVisible,
@@ -104,12 +116,5 @@ fun NewReminderFab(isVisible: Boolean, onItemClick: (Long?) -> Unit){
         }
     }
 }
-private fun getItems():List<Reminder>{
-    val itemList= mutableListOf<Reminder>()
-    for(i in 1 until 20){
-        itemList.add(Reminder(i.toLong(),"contenido recordatorio de prueba N° $i".repeat(i)))
-    }
-    return itemList
 
-}
 

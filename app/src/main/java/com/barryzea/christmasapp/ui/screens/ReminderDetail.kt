@@ -2,6 +2,7 @@ package com.barryzea.christmasapp.ui.screens
 
 import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.graphics.Paint.Align
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -32,6 +33,7 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -47,9 +49,13 @@ import com.barryzea.christmasapp.data.model.localTheme
 import com.barryzea.christmasapp.ui.theme.christmasTypography
 import com.barryzea.christmasapp.ui.theme.textHintColorDark
 import com.barryzea.christmasapp.ui.theme.textHintColorLight
-import com.barryzea.christmasapp.ui.viewModel.MainViewModel
 import com.barryzea.christmasapp.ui.viewModel.ReminderViewModel
+import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 
 /**
@@ -58,54 +64,58 @@ import java.util.Calendar
  * Copyright (c)  All rights reserved.
  **/
 
-private lateinit var isBackPressed: MutableState<Boolean>
 private lateinit var showDialog:MutableState<Boolean>
 private lateinit var context:Context
 private lateinit var editTextValue:MutableState<String>
-private lateinit var timeInMillisForSave:MutableState<Long>
+private lateinit  var timeInMillisForSave:MutableState<Long>
 private lateinit var reminderEnable:MutableState<Boolean>
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 private lateinit var datePickerState:DatePickerState
-
+private lateinit var isNewRegister:MutableState<Boolean>
 
 @Composable
 fun ReminderDetail(viewModel:ReminderViewModel = hiltViewModel(), idReminder: Long?, upPress:(Long?)->Unit) {
     //Propiedades para guardar
     editTextValue = remember {mutableStateOf("")}
-    timeInMillisForSave = rememberSaveable{ mutableLongStateOf(Calendar.getInstance().timeInMillis) }
+    timeInMillisForSave = remember{ mutableLongStateOf(Calendar.getInstance().timeInMillis) }
     reminderEnable = rememberSaveable{ mutableStateOf(false) }
 
-    //Este valor debe ser dinámico si vamos a sobreescribir el evento onBackPressed
-    isBackPressed = remember { mutableStateOf(true) }
     showDialog = rememberSaveable{ mutableStateOf(false) }
     context = LocalContext.current
+    isNewRegister = remember{ mutableStateOf(false) }
 
-    //Si se insertó correctamente regresamos atrás
     val reminderSavedId by viewModel.idInserted.observeAsState(0)
+    val updatedRow by viewModel.updatedRow.observeAsState(0)
+    val reminderById by viewModel.reminderById.observeAsState(Reminder())
+
+    if(reminderById.id>0) setUpReminderById(reminderById)
+
     if(reminderSavedId > 0){
         Toast.makeText(context, context.getString(R.string.successfulSave), Toast.LENGTH_SHORT).show()
         upPress(reminderSavedId)
+    }
+    if(updatedRow>0){
+        Toast.makeText(context, "Modificación correcta", Toast.LENGTH_SHORT).show()
+        upPress(idReminder)
     }
 
     /*
     * Capturamos el argumento
     * */
-    idReminder?.let{id->
-        if(id>0){
-            Toast.makeText(context, "$id", Toast.LENGTH_SHORT).show()
-        }else{
-            Log.e("argumento por default", "$id")
-        }
-    }
+    getArguments(idReminder, viewModel)
 
     Scaffold (topBar = { TopAppBar() }){
         Box(modifier = Modifier.padding(it)){
             Column {
+                Row(Modifier.align(Alignment.End)){
+                    Text(text = toDateString(timeInMillisForSave.value) )
+                }
                 Row (
                     Modifier
                         .fillMaxSize()
-                        .weight(0.9f)
+                        .weight(0.8f)
                         ){
                     TextField(
                         modifier= Modifier
@@ -129,13 +139,43 @@ fun ReminderDetail(viewModel:ReminderViewModel = hiltViewModel(), idReminder: Lo
                 }
             }
             //Controlamos el evento onBackPressed
-            BackHandler (enabled = isBackPressed.value, onBack = {onBack(viewModel)})
+            BackHandler (onBack = {onBack(viewModel, idReminder)})
             //si se hizo click en el ícono calendario del topBar
             if(showDialog.value) ShowDatePickerDialog()
         }
     }
 }
+private fun getArguments(idReminder: Long?, viewModel: ReminderViewModel){
+    idReminder?.let{id->
+        if(id>0){
+            isNewRegister.value=false
+            viewModel.getReminderById(idReminder)
+          }else{
+            isNewRegister.value=true
+          }
+    }
 
+}
+@Composable
+private fun toDateString(long: Long):String{
+    //El datepicker devuelve una fecha con un día menos a la actual mi zona horaria
+    //lo resulvo de la siguiente manera
+    val pattern = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    var selectedUtc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    selectedUtc.timeInMillis = long
+    val localTime=Calendar.getInstance()
+    localTime.set(selectedUtc.get(Calendar.YEAR),selectedUtc.get(Calendar.MONTH), selectedUtc.get(Calendar.DATE))
+
+    return pattern.format(localTime.timeInMillis)
+}
+@Composable
+private fun setUpReminderById(reminder: Reminder){
+
+    editTextValue.value = reminder.description
+    timeInMillisForSave.value = reminder.timeInMillis
+    reminderEnable.value = reminder.enable
+
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBar(){
@@ -151,21 +191,28 @@ fun TopAppBar(){
         })
 }
 
-private fun saveReminder(viewModel: ReminderViewModel) {
-    val reminder = Reminder(description= editTextValue.value, timeInMillis = timeInMillisForSave.value, enable = reminderEnable.value)
+private fun saveReminder(viewModel: ReminderViewModel, idReminder: Long?) {
+    if(isNewRegister.value){
+    val reminder = Reminder(description= editTextValue.value, timeInMillis = timeInMillisForSave?.value!!, enable = reminderEnable.value)
     viewModel.saveReminder(reminder)
+    }else{
+        val reminder = Reminder(id = idReminder!!, description= editTextValue.value, timeInMillis = timeInMillisForSave?.value!!, enable = reminderEnable.value)
+        viewModel.updateReminder(reminder)
+    }
 
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowDatePickerDialog(){
     datePickerState = rememberDatePickerState(initialSelectedDateMillis = Calendar.getInstance().timeInMillis)
     DatePickerDialog(onDismissRequest = { showDialog.value=false }, confirmButton = {
-        TextButton(onClick = { showDialog.value = false }) {
-            Text("Ok")
+        TextButton(onClick = {
+            showDialog.value = false
             timeInMillisForSave.value= datePickerState.selectedDateMillis!!
             reminderEnable.value=true
-
+        }) {
+            Text("Ok")
         }
     },
         dismissButton = {
@@ -177,9 +224,8 @@ fun ShowDatePickerDialog(){
     }
 
 }
-private fun onBack(viewModel: ReminderViewModel) {
-    saveReminder(viewModel)
-    isBackPressed.value=false
+private fun onBack(viewModel: ReminderViewModel, idReminder: Long?) {
+    saveReminder(viewModel, idReminder)
 }
 @Preview(
     showBackground = true,

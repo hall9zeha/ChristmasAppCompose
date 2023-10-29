@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.barryzea.christmasapp.data.model.Reminder
 
 
@@ -18,6 +19,9 @@ import com.barryzea.christmasapp.data.model.Reminder
 interface ReminderDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun saveReminder(reminder:Reminder):Long
+
+    @Update
+    suspend fun updateReminder(reminder:Reminder):Int
 
     @Query("delete from Reminder where id=:idReminder")
     suspend fun deleteReminder(idReminder:Long)
