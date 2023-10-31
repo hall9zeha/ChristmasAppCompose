@@ -16,4 +16,5 @@
     <string name="cancel">Cancelar</string>
     <string name="writeYourReminderHere">Escribe aquí tu recordatorio</string>
     <string name="successfulSave">Guardado correctamente</string>
+    <string name="christmas_notify">Christmas notify</string>
 </resources>

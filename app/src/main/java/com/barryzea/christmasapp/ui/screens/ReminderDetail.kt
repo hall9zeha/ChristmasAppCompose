@@ -39,14 +39,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.dataStore
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.barryzea.christmasapp.R
+import com.barryzea.christmasapp.common.cancelNotification
+import com.barryzea.christmasapp.common.setAlarm
 import com.barryzea.christmasapp.data.model.Reminder
 import com.barryzea.christmasapp.data.model.localTheme
 import com.barryzea.christmasapp.ui.theme.christmasTypography
 import com.barryzea.christmasapp.ui.theme.textHintColorDark
 import com.barryzea.christmasapp.ui.theme.textHintColorLight
 import com.barryzea.christmasapp.ui.viewModel.ReminderViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -70,8 +75,12 @@ private lateinit var reminderEnable:MutableState<Boolean>
 private lateinit var datePickerState:DatePickerState
 private lateinit var isNewRegister:MutableState<Boolean>
 
+
 @Composable
 fun ReminderDetail(viewModel:ReminderViewModel = hiltViewModel(), idReminder: Long?, upPress:(Long?)->Unit) {
+    //Preferencias
+
+
     //Propiedades para guardar
     editTextValue = remember {mutableStateOf("")}
     timeInMillisForSave = remember{ mutableLongStateOf(Calendar.getInstance().timeInMillis) }
@@ -87,9 +96,25 @@ fun ReminderDetail(viewModel:ReminderViewModel = hiltViewModel(), idReminder: Lo
     if(reminderById?.id!!>0) SetUpReminderById(reminderById)
 
     //Si se guardó un nuevo registro
-    if(reminderSavedId > 0) upPress(0)
+    if(reminderSavedId > 0) {
+        // Si las notificaciones están activadas
+        if(viewModel.prefsEntity.dateNotify){
+            setAlarm(Reminder(reminderSavedId,
+                editTextValue.value,
+                timeInMillisForSave.value,
+                reminderEnable.value))
+        }
+        upPress(0)}
     //Si se modificó un registro existente
-    if(reminderUpdatedRow>0) upPress(idReminder)
+    if(reminderUpdatedRow>0) {
+        // Si las notificaciones están activadas
+        if(viewModel.prefsEntity.dateNotify){
+             setAlarm(Reminder(idReminder!!,
+                editTextValue.value,
+                timeInMillisForSave.value,
+                reminderEnable.value))
+        }
+        upPress(idReminder)}
 
     /*
     * Capturamos el argumento
