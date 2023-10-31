@@ -11,7 +11,7 @@ import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.barryzea.christmasapp.common.BottomBarTab
+import com.barryzea.christmasapp.data.model.BottomBarTab
 import com.barryzea.christmasapp.ui.navigation.RemindersDestinations.REMINDER_ITEM_ROUTE
 import kotlinx.coroutines.CoroutineScope
 

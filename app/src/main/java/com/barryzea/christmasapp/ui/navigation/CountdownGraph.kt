@@ -2,7 +2,7 @@ package com.barryzea.christmasapp.ui.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.barryzea.christmasapp.common.BottomBarTab
+import com.barryzea.christmasapp.data.model.BottomBarTab
 import com.barryzea.christmasapp.ui.screens.CountdownScreen
 
 

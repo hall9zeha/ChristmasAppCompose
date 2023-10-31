@@ -1,18 +1,18 @@
 <resources>
-    <string name="app_name">ChristmasApp</string>
-    <string name="minutes">Minutos</string>
-    <string name="hour">Horas</string>
-    <string name="seconds">Segundos</string>
-    <string name="days">Días</string>
-    <string name="merryChristmas">Ya es Navidad</string>
-    <string name="enjoyIt">Disfrútalo</string>
-    <string name="still">Faltan</string>
-    <string name="nightMode">Activar modo noche</string>
-    <string name="christmasNotify">Notificarme antes</string>
-    <string name="aboutThis">Acerca de esta app</string>
-    <string name="accept">Aceptar</string>
-    <string name="reminder">Recordatorio</string>
-    <string name="cancel">Cancelar</string>
-    <string name="writeYourReminderHere">Escribe aquí tu recordatorio</string>
-    <string name="successfulSave">Guardado correctamente</string>
+    <string name="app_name">Christmas countdown</string>
+    <string name="minutes">Minutes</string>
+    <string name="hour">Hours</string>
+    <string name="seconds">Seconds</string>
+    <string name="days">Days</string>
+    <string name="merryChristmas">It\'s Christmas already</string>
+    <string name="enjoyIt">Enjoy it</string>
+    <string name="still">Still</string>
+    <string name="nightMode">Activate night mode</string>
+    <string name="christmasNotify">Notify me</string>
+    <string name="aboutThis">About this</string>
+    <string name="accept">Accept</string>
+    <string name="reminder">Reminder</string>
+    <string name="cancel">Cancel</string>
+    <string name="writeYourReminderHere">Write your reminder here</string>
+    <string name="successfulSave">Saved successfully</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.barryzea.christmasapp.common
+package com.barryzea.christmasapp.data.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

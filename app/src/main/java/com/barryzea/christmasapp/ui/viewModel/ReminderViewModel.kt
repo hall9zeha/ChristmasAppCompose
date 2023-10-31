@@ -5,9 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.barryzea.christmasapp.common.SingleLiveData
 import com.barryzea.christmasapp.data.model.Reminder
 import com.barryzea.christmasapp.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -25,11 +29,14 @@ import javax.inject.Inject
 @HiltViewModel
 class ReminderViewModel @Inject constructor(private val repository: MainRepository):ViewModel() {
 
+ private val viewModelJob= SupervisorJob()
+ private val uiScope= CoroutineScope(Dispatchers.Main  + viewModelJob)
+
  private var _remindersList:MutableStateFlow<MutableList<Reminder>> = MutableStateFlow(mutableListOf())
  val reminderList:StateFlow<MutableList<Reminder>> = _remindersList
 
- private var _reminderById:MutableLiveData<Reminder> = MutableLiveData()
- val reminderById:LiveData<Reminder> = _reminderById
+ private var _reminderById:SingleLiveData<Reminder> = SingleLiveData()
+ val reminderById:SingleLiveData<Reminder> = _reminderById
 
  private var _idInserted:MutableLiveData<Long> = MutableLiveData()
  val idInserted:LiveData<Long> = _idInserted
@@ -37,14 +44,19 @@ class ReminderViewModel @Inject constructor(private val repository: MainReposito
  private var _updatedRow:MutableLiveData<Int> = MutableLiveData()
  val updatedRow:LiveData<Int> = _updatedRow
 
+ override fun onCleared() {
+  super.onCleared()
+  viewModelJob.cancel()
+ }
  fun saveReminder(reminder:Reminder){
-  viewModelScope.launch { _idInserted.value=repository.saveReminder(reminder) }
+  uiScope.launch { _idInserted.value=repository.saveReminder(reminder) }
  }
  fun getReminderById(idReminder:Long){
-  viewModelScope.launch { _reminderById.value = repository.getReminderById(idReminder) }
+  uiScope.launch { _reminderById.value= repository.getReminderById(idReminder)
+  }
  }
  fun updateReminder(reminder:Reminder){
-  viewModelScope.launch { _updatedRow.value = repository.updateReminder(reminder)
+  uiScope.launch { _updatedRow.value = repository.updateReminder(reminder)
     }
   }
  fun updateReminderList(reminder: Reminder){
@@ -52,10 +64,10 @@ class ReminderViewModel @Inject constructor(private val repository: MainReposito
   _remindersList.value[index] = reminder
  }
  fun getAllReminders(){
-  viewModelScope.launch { _remindersList.value=repository.getAllReminders() }
+  uiScope.launch { _remindersList.value=repository.getAllReminders() }
  }
  fun deleteReminder(reminder:Reminder){
-  viewModelScope.launch {
+  uiScope.launch {
    repository.deleteReminder(reminder.id)
    _remindersList.update {
      val mutableList  = it.toMutableList()

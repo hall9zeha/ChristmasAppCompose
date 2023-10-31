@@ -20,7 +20,7 @@ import javax.inject.Inject
  **/
 
 class MainRepositoryImpl @Inject constructor(reminderDb: ReminderDatabase) :MainRepository{
-    val db = reminderDb.reminderDao()
+    private val db = reminderDb.reminderDao()
     override suspend fun getChristmasCountdown(): Flow<CountdownEntity> {
         return flow{
             while(true){

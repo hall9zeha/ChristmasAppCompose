@@ -13,6 +13,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -29,13 +31,11 @@ import com.barryzea.christmasapp.ui.components.ID_INSERTED_KEY
 import com.barryzea.christmasapp.ui.components.RemindersList
 import com.barryzea.christmasapp.ui.viewModel.ReminderViewModel
 
-
 /**
  * Project ChristmasApp
  * Created by Barry Zea H. on 21/10/23.
  * Copyright (c)  All rights reserved.
  **/
-
 
 @Composable
 fun RemindersScreen(
@@ -56,16 +56,16 @@ fun RemindersScreen(
     val reminderList  by viewModel.reminderList.collectAsState(listOf())
     Log.e("TAG", "Fuera de corrutina")
     LaunchedEffect(key1 = true) {
-        viewModel.getAllReminders()
+       viewModel.getAllReminders()
         Log.e("TAG", "RemindersScreen")
-        if(navBackStackEntry?.savedStateHandle?.contains(ID_INSERTED_KEY) == true){
-            val id=navBackStackEntry.savedStateHandle!!.get<Long>(ID_INSERTED_KEY)
-            fetchUpdatedItem(id!!, viewModel)
-            navBackStackEntry.savedStateHandle.remove<Long>(ID_INSERTED_KEY)
-        }
     }
-    val reminderById by  viewModel.reminderById.observeAsState()
-    RefreshItemInList(reminderById, viewModel)
+    if(navBackStackEntry?.savedStateHandle?.contains(ID_INSERTED_KEY) == true){
+        val id=navBackStackEntry.savedStateHandle!!.get<Long>(ID_INSERTED_KEY)
+        if(id!!>0)fetchUpdatedItem(id!!, viewModel)
+        navBackStackEntry.savedStateHandle.remove<Long>(ID_INSERTED_KEY)
+    }
+    val reminder by viewModel.reminderById.observeAsState()
+    reminder?.let{RefreshItemInList(reminder, viewModel) }
 
     val fabVisibility= rememberSaveable{
         mutableStateOf(true)
@@ -84,6 +84,7 @@ fun RemindersScreen(
         RemindersList(reminderList, scrollState = scrollState,
             nestedScrollConnection,
             paddingValues,
+            //Si abrimos un registro ya existente enviamos su id a la vista de detalle
             onItemClick = {reminder->onItemClick(reminder.id)},
             onDeleteClick = {reminder->deleteReminder(reminder,viewModel)})
     }
@@ -94,14 +95,11 @@ fun deleteReminder(reminder: Reminder, viewModel: ReminderViewModel){
 
 @Composable
 fun RefreshItemInList(reminder:Reminder?, viewModel: ReminderViewModel){
-    reminder?.let{
-        LaunchedEffect(key1 = true) {
-            viewModel.updateReminderList(it!!)
-        }
-    }
+    reminder?.let{ viewModel.updateReminderList(it!!)}
 }
+
 fun fetchUpdatedItem(idReminder:Long, viewModel: ReminderViewModel){
-    viewModel.getReminderById(idReminder)
+      viewModel.getReminderById(idReminder)
 }
 @Composable
 fun NewReminderFab(isVisible: Boolean, onItemClick: (Long?) -> Unit){
@@ -109,6 +107,7 @@ fun NewReminderFab(isVisible: Boolean, onItemClick: (Long?) -> Unit){
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it }),) {
         FloatingActionButton(
+            //Si agregamos un nuevo registro el argumento enviado a la pantalla detalle será nulo
             onClick = {onItemClick(null) },
 
         ) {

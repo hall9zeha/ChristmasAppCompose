@@ -2,9 +2,6 @@ package com.barryzea.christmasapp.ui.screens
 
 import android.content.Context
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.graphics.Paint.Align
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -51,9 +48,7 @@ import com.barryzea.christmasapp.ui.theme.textHintColorDark
 import com.barryzea.christmasapp.ui.theme.textHintColorLight
 import com.barryzea.christmasapp.ui.viewModel.ReminderViewModel
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
@@ -81,25 +76,20 @@ fun ReminderDetail(viewModel:ReminderViewModel = hiltViewModel(), idReminder: Lo
     editTextValue = remember {mutableStateOf("")}
     timeInMillisForSave = remember{ mutableLongStateOf(Calendar.getInstance().timeInMillis) }
     reminderEnable = rememberSaveable{ mutableStateOf(false) }
-
+    //*********************************************************************
     showDialog = rememberSaveable{ mutableStateOf(false) }
     context = LocalContext.current
     isNewRegister = remember{ mutableStateOf(false) }
 
     val reminderSavedId by viewModel.idInserted.observeAsState(0)
-    val updatedRow by viewModel.updatedRow.observeAsState(0)
+    val reminderUpdatedRow by viewModel.updatedRow.observeAsState(0)
     val reminderById by viewModel.reminderById.observeAsState(Reminder())
+    if(reminderById?.id!!>0) SetUpReminderById(reminderById)
 
-    if(reminderById.id>0) setUpReminderById(reminderById)
-
-    if(reminderSavedId > 0){
-        Toast.makeText(context, context.getString(R.string.successfulSave), Toast.LENGTH_SHORT).show()
-        upPress(reminderSavedId)
-    }
-    if(updatedRow>0){
-        Toast.makeText(context, "Modificación correcta", Toast.LENGTH_SHORT).show()
-        upPress(idReminder)
-    }
+    //Si se guardó un nuevo registro
+    if(reminderSavedId > 0) upPress(0)
+    //Si se modificó un registro existente
+    if(reminderUpdatedRow>0) upPress(idReminder)
 
     /*
     * Capturamos el argumento
@@ -158,10 +148,10 @@ private fun getArguments(idReminder: Long?, viewModel: ReminderViewModel){
 }
 @Composable
 private fun toDateString(long: Long):String{
-    //El datepicker devuelve una fecha con un día menos a la actual mi zona horaria
-    //lo resulvo de la siguiente manera
+    //El datepicker devuelve una fecha con un día menos a la actual
+    //lo resuelvo de la siguiente manera
     val pattern = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    var selectedUtc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    val selectedUtc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
     selectedUtc.timeInMillis = long
     val localTime=Calendar.getInstance()
     localTime.set(selectedUtc.get(Calendar.YEAR),selectedUtc.get(Calendar.MONTH), selectedUtc.get(Calendar.DATE))
@@ -169,12 +159,12 @@ private fun toDateString(long: Long):String{
     return pattern.format(localTime.timeInMillis)
 }
 @Composable
-private fun setUpReminderById(reminder: Reminder){
-
-    editTextValue.value = reminder.description
-    timeInMillisForSave.value = reminder.timeInMillis
-    reminderEnable.value = reminder.enable
-
+private fun SetUpReminderById(reminder: Reminder?){
+reminder.let {
+    editTextValue.value = reminder!!.description
+    timeInMillisForSave.value = reminder!!.timeInMillis
+    reminderEnable.value = reminder!!.enable
+}
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -191,10 +181,10 @@ fun TopAppBar(){
         })
 }
 
-private fun saveReminder(viewModel: ReminderViewModel, idReminder: Long?) {
+private fun saveOrUpdate(viewModel: ReminderViewModel, idReminder: Long?) {
     if(isNewRegister.value){
-    val reminder = Reminder(description= editTextValue.value, timeInMillis = timeInMillisForSave?.value!!, enable = reminderEnable.value)
-    viewModel.saveReminder(reminder)
+        val reminder = Reminder(description= editTextValue.value, timeInMillis = timeInMillisForSave?.value!!, enable = reminderEnable.value)
+        viewModel.saveReminder(reminder)
     }else{
         val reminder = Reminder(id = idReminder!!, description= editTextValue.value, timeInMillis = timeInMillisForSave?.value!!, enable = reminderEnable.value)
         viewModel.updateReminder(reminder)
@@ -225,7 +215,7 @@ fun ShowDatePickerDialog(){
 
 }
 private fun onBack(viewModel: ReminderViewModel, idReminder: Long?) {
-    saveReminder(viewModel, idReminder)
+    saveOrUpdate(viewModel, idReminder)
 }
 @Preview(
     showBackground = true,

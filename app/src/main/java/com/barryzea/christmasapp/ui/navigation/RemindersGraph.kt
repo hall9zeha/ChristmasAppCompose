@@ -1,17 +1,15 @@
 package com.barryzea.christmasapp.ui.navigation
 
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.barryzea.christmasapp.common.BottomBarTab
+import com.barryzea.christmasapp.data.model.BottomBarTab
 import com.barryzea.christmasapp.ui.navigation.RemindersDestinations.REMINDER_ITEM_ID_KEY
 import com.barryzea.christmasapp.ui.navigation.RemindersDestinations.REMINDER_ITEM_ROUTE
 import com.barryzea.christmasapp.ui.screens.ReminderDetail
 import com.barryzea.christmasapp.ui.screens.RemindersScreen
-import com.barryzea.christmasapp.ui.viewModel.MainViewModel
 
 
 /**
@@ -28,7 +26,7 @@ object RemindersDestinations{
 }
 fun NavGraphBuilder.addRemindersGraph(onReminderItemSelected:(Long?, NavBackStackEntry)->Unit,
                                       upPress:(idInserted:Long?)->Unit) {
-    composable(BottomBarTab.REMINDERS.route) {from->
+    composable(BottomBarTab.REMINDERS.route) { from->
         RemindersScreen(onItemClick = {id->onReminderItemSelected(id?:0,from)}, navBackStackEntry= from)
     }
     composable(
