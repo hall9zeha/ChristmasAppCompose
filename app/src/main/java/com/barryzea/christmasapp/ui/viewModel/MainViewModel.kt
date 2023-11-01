@@ -7,7 +7,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.barryzea.christmasapp.common.SingleLiveData
+import com.barryzea.christmasapp.common.preferences.SettingsStore
 import com.barryzea.christmasapp.data.model.CountdownEntity
+import com.barryzea.christmasapp.data.model.PrefsEntity
 import com.barryzea.christmasapp.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -28,14 +31,14 @@ import javax.inject.Inject
  **/
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val repository:MainRepository):ViewModel() {
+class MainViewModel @Inject constructor(private val repository:MainRepository, private val datastore:SettingsStore):ViewModel() {
 
-    private var _christmasCountdown:MutableLiveData<CountdownEntity> = MutableLiveData()
+    private var _christmasCountdown:SingleLiveData<CountdownEntity> = SingleLiveData()
     lateinit var job:Job
 
     private var _loading = MutableStateFlow(true)
     val loading = _loading.asStateFlow()
-    val christmasCountdown:LiveData<CountdownEntity> get() = _christmasCountdown
+    val christmasCountdown:SingleLiveData<CountdownEntity> get() = _christmasCountdown
 
     //Inicializamos el valor de loading en true para mostrar el splash screen
     init{

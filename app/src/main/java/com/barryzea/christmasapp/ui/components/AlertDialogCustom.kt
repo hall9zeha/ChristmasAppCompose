@@ -65,10 +65,7 @@ fun  AlertDialogCustom(onDismissRequest:()->Unit,
                          .size(120.dp)
                  )
                  Text(
-                     text = """Countdown Christmas App 
-        |desarrollada por  Barry Zea H. 
-     |con la colaboración de
-     |Martha Nicholls""".trimMargin(),
+                     text = stringResource(R.string.aboutThisMsg).trimMargin(),
                      textAlign = TextAlign.Center
                  )
              }

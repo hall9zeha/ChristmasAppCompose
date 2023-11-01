@@ -2,6 +2,7 @@ package com.barryzea.christmasapp
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -94,7 +95,6 @@ class MainActivity : ComponentActivity() {
                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                             shape = RoundedCornerShape(16.dp)
                         ) {
-
                             Container()
                         }
 

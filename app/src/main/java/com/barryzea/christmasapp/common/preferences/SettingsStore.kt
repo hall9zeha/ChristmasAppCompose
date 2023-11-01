@@ -26,17 +26,20 @@ class SettingsStore @Inject constructor(private val context:Context) {
  companion object{
    val NIGHT_MODE = booleanPreferencesKey("NIGHT_MODE")
    val DATE_NOTIFY = booleanPreferencesKey("DATE_NOTIFY")
+   val ALREADY_IS_DATE = booleanPreferencesKey("ALREADY_IS_DATE")
  }
  suspend fun saveToDataStore(prefsEntity:PrefsEntity){
  context.dataStore.edit {
    it[NIGHT_MODE] = prefsEntity.darkTheme!!
    it[DATE_NOTIFY] = prefsEntity.dateNotify!!
+   it[ALREADY_IS_DATE] = prefsEntity.alreadyIsDate!!
   }
  }
  fun getFromDataStore() = context.dataStore.data.map{
    PrefsEntity(
     darkTheme = it[NIGHT_MODE]?:false,
-    dateNotify = it[DATE_NOTIFY]?:false)
+    dateNotify = it[DATE_NOTIFY]?:false,
+       alreadyIsDate = it[ALREADY_IS_DATE]?:false)
  }
  suspend fun clearDataStore()=context.dataStore.edit{
   it.clear()

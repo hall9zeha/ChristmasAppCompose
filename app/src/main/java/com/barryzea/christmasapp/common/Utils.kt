@@ -13,6 +13,7 @@ import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -24,6 +25,7 @@ import com.barryzea.christmasapp.R
 import com.barryzea.christmasapp.data.model.Reminder
 import com.barryzea.christmasapp.ui.br.AlarmReceiver
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
 
@@ -114,6 +116,18 @@ fun getDatetimeWithoutHours(timeInMillis: Long): Long {
     val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
     val dateStringFormatted = sdf.format(timeInMillis)
     return sdf.parse(dateStringFormatted)?.time ?: 0
+}
+fun checkIfIsAlreadyCountdownDate(month:Int = 12, day:Int=25):Boolean{
+    val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
+    val calendar = Calendar.getInstance()
+    val year = calendar.get(Calendar.YEAR)
+    val setupChristmas= Calendar.getInstance()
+    setupChristmas.set(year,month-1,day)
+    val dateFormatted=sdf.format(setupChristmas.timeInMillis)
+    val countdownDate = sdf.parse(dateFormatted).time
+    val currentDate = getDatetimeWithoutHours(Calendar.getInstance().timeInMillis)
+    return countdownDate == currentDate
+
 }
 @SuppressLint("ScheduleExactAlarm")
 fun setAlarm(reminderEntity:Reminder){

@@ -1,5 +1,6 @@
 package com.barryzea.christmasapp.ui.navigation
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -36,5 +37,5 @@ fun NavGraphBuilder.addRemindersGraph(onReminderItemSelected:(Long?, NavBackStac
         val arguments = requireNotNull(backStackEntry.arguments)
         val itemId = arguments.getLong(REMINDER_ITEM_ID_KEY)
         ReminderDetail(idReminder = itemId, upPress = upPress)
-    }
+        }
 }

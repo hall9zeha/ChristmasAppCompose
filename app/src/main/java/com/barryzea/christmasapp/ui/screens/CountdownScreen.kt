@@ -1,5 +1,6 @@
 package com.barryzea.christmasapp.ui.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
@@ -21,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -52,6 +54,7 @@ import com.barryzea.christmasapp.data.model.localTheme
 import com.barryzea.christmasapp.ui.theme.greenHard
 import com.barryzea.christmasapp.ui.theme.greenSoft
 import com.barryzea.christmasapp.ui.viewModel.MainViewModel
+import kotlinx.coroutines.delay
 
 
 /**
@@ -67,7 +70,7 @@ private lateinit var viewModel:MainViewModel
 fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
     viewModel =mainViewModel
     //val christmasFont=GoogleFont("Mountains of Christmas")//El nombre de la fuente que queremos descargar
-    val scrollState = rememberScrollState()
+
     //La configuramos para ponerla al elemento Texto posteriormente
     /*fontFamily = FontFamily(Font(googleFont=christmasFont,
         fontProvider=getFontProviders(),
@@ -81,19 +84,22 @@ fun CountdownScreen(mainViewModel: MainViewModel = hiltViewModel()){
             FontWeight.W700
         )
     )*/
-    viewModel.fetchChristmasCountdown()
-    val response by mainViewModel.christmasCountdown.observeAsState(CountdownEntity())
+    LaunchedEffect(key1 = true ) {
+        viewModel.fetchChristmasCountdown()
+    }
+    val response by mainViewModel.christmasCountdown.observeAsState()
     Box {
             ChristmasBell()
               Column(
                   Modifier
-                      .fillMaxSize()
-                      .verticalScroll(scrollState),
+                      .fillMaxSize(),
                   horizontalAlignment = Alignment.CenterHorizontally,
                   verticalArrangement = Arrangement.Center,
 
               ) {
-                 CountdownBody(response = response!!)
+                 CountdownBody(response = response)
+                  Log.e("TIMER", "CountdownScreen: ", )
+
               }
     }
 }@Composable
@@ -106,13 +112,16 @@ fun ChristmasBell(){
     }
 }
 @Composable
-fun CountdownBody(response: CountdownEntity, modifier: Modifier = Modifier
+fun CountdownBody(response: CountdownEntity?, modifier: Modifier = Modifier
     .fillMaxWidth()) {
-   if(!response.itsChristmas){
-       ItsNotChristmasYet(response = response, modifier =modifier)
-   }else{
-        viewModel.job.cancel()
-       ItsChristmas()  }
+    response?.let {
+        if (!response?.itsChristmas!!) {
+            ItsNotChristmasYet(response = response, modifier = modifier)
+        } else {
+            ItsChristmas()
+            viewModel.job.cancel()
+        }
+    }
 }
 
 @Preview(
@@ -133,7 +142,7 @@ fun ItsChristmas(){
             text = stringResource(R.string.merryChristmas),
             fontSize = 46.sp,
             textAlign= TextAlign.Center,
-            color = Color(0xff323232),
+            color = if(localTheme.current.isDark)Color.White else Color(0xff323232),
         )
         AnimationLottieView(animRes = LottieCompositionSpec.RawRes(R.raw.lottie_anim_1),
             idLayout = "lottieViewSanta",260.dp,260.dp )
@@ -142,74 +151,121 @@ fun ItsChristmas(){
             text = stringResource(R.string.enjoyIt),
             fontSize = 46.sp,
             textAlign= TextAlign.Center,
-            color = Color(0xff323232),
+            color = if(localTheme.current.isDark)Color.White else Color(0xff323232),
         )
     }
 }
 @Composable
-fun ItsNotChristmasYet(response:CountdownEntity, modifier:Modifier){
-    Column (verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally){
-        Row(
-            modifier = Modifier.layoutId("headerRow"),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            GenericTextView("tvStill",msgText = stringResource(R.string.still),
-                color=if(localTheme.current.isDark)Color.White else Color(0xff323232),
-                34.sp,modifier =modifier )
-        }
-        Box(
-            modifier = Modifier
-                .layoutId("contentMain")
-                .height(260.dp)
-                .width(260.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painterResource(id = R.drawable.christmas_wreath),
-                contentDescription = "",
-                modifier = Modifier
-                    .layoutId("wreathImg")
-                    .height(260.dp)
-                    .width(260.dp)
-            )
-            Column(Modifier.padding(0.dp)) {
-                GenericTextView("tvDays",msgText = response.day.toString(),
-                    color = if(localTheme.current.isDark) Color.White else Color(0xff323232),
-                    34.sp,modifier =modifier )
-                GenericTextView("tvDaysDesc",msgText = stringResource(id = R.string.days),
-                    color=if(localTheme.current.isDark) Color.White else Color(0xff323232),
-                    16.sp,modifier =modifier )
-            }
-        }
-        // Surface(shadowElevation = 2.dp) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .shadow(2.dp)
-                // .height(80.dp)
-                .wrapContentHeight()
-                .background(
-                    color = if (localTheme.current.isDark) greenHard else
-                        Color(0xFFF05454)
-                )
-        ) {
+fun ItsNotChristmasYet(response:CountdownEntity?, modifier:Modifier){
+    if(response!=null) {
 
-            Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                GenericTextView("tvHours",msgText = response.hour.toString(),Color.White,34.sp,modifier =modifier )
-                GenericTextView("tvHoursDesc",msgText = stringResource(id = R.string.hour),Color.White,16.sp,modifier =modifier )
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier.layoutId("headerRow"),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                GenericTextView(
+                    "tvStill", msgText = stringResource(R.string.still),
+                    color = if (localTheme.current.isDark) Color.White else Color(0xff323232),
+                    34.sp, modifier = modifier
+                )
             }
-            Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                GenericTextView("tvMinutes",msgText = response.minute.toString(),Color.White,34.sp,modifier =modifier )
-                GenericTextView("tvMinuteDesc",msgText = stringResource(id = R.string.minutes),Color.White,16.sp,modifier =modifier )
+            Box(
+                modifier = Modifier
+                    .layoutId("contentMain")
+                    .height(260.dp)
+                    .width(260.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painterResource(id = R.drawable.christmas_wreath),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .layoutId("wreathImg")
+                        .height(260.dp)
+                        .width(260.dp)
+                )
+                Column(Modifier.padding(0.dp)) {
+                    GenericTextView(
+                        "tvDays", msgText = response.day.toString(),
+                        color = if (localTheme.current.isDark) Color.White else Color(0xff323232),
+                        34.sp, modifier = modifier
+                    )
+                    GenericTextView(
+                        "tvDaysDesc", msgText = stringResource(id = R.string.days),
+                        color = if (localTheme.current.isDark) Color.White else Color(0xff323232),
+                        16.sp, modifier = modifier
+                    )
+                }
             }
-            Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                GenericTextView("tvSecond",msgText = response.second.toString(),Color.White,34.sp,modifier =modifier )
-                GenericTextView("tvSecondDesc",msgText = stringResource(id = R.string.seconds),Color.White,16.sp,modifier =modifier )
-           }
+            // Surface(shadowElevation = 2.dp) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .shadow(2.dp)
+                    // .height(80.dp)
+                    .wrapContentHeight()
+                    .background(
+                        color = if (localTheme.current.isDark) greenHard else
+                            Color(0xFFF05454)
+                    )
+            ) {
+
+                Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                    GenericTextView(
+                        "tvHours",
+                        msgText = response.hour.toString(),
+                        Color.White,
+                        34.sp,
+                        modifier = modifier
+                    )
+                    GenericTextView(
+                        "tvHoursDesc",
+                        msgText = stringResource(id = R.string.hour),
+                        Color.White,
+                        16.sp,
+                        modifier = modifier
+                    )
+                }
+                Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                    GenericTextView(
+                        "tvMinutes",
+                        msgText = response.minute.toString(),
+                        Color.White,
+                        34.sp,
+                        modifier = modifier
+                    )
+                    GenericTextView(
+                        "tvMinuteDesc",
+                        msgText = stringResource(id = R.string.minutes),
+                        Color.White,
+                        16.sp,
+                        modifier = modifier
+                    )
+                }
+                Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                    GenericTextView(
+                        "tvSecond",
+                        msgText = response.second.toString(),
+                        Color.White,
+                        34.sp,
+                        modifier = modifier
+                    )
+                    GenericTextView(
+                        "tvSecondDesc",
+                        msgText = stringResource(id = R.string.seconds),
+                        Color.White,
+                        16.sp,
+                        modifier = modifier
+                    )
+                }
+            }
+            //}
         }
-        //}
     }
 }
 @Composable

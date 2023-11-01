@@ -60,11 +60,13 @@ fun RemindersScreen(
     LaunchedEffect(key1 = true) {
        viewModel.getAllReminders()
         Log.e("TAG", "RemindersScreen")
-    }
-    if(navBackStackEntry?.savedStateHandle?.contains(ID_INSERTED_KEY) == true){
-        val id=navBackStackEntry.savedStateHandle!!.get<Long>(ID_INSERTED_KEY)
-        if(id!!>0)fetchUpdatedItem(id!!, viewModel)
-        navBackStackEntry.savedStateHandle.remove<Long>(ID_INSERTED_KEY)
+        //Si tenemos el id de algún item enviado desde la pantalla detalle para hacer cambios
+        if(navBackStackEntry?.savedStateHandle?.contains(ID_INSERTED_KEY) == true){
+            val id=navBackStackEntry.savedStateHandle!!.get<Long>(ID_INSERTED_KEY)
+            if(id!!>0)fetchUpdatedItem(id!!, viewModel)
+            //removemos el valor guardado en el bundle para las siguientes recomposiciones
+            navBackStackEntry.savedStateHandle.remove<Long>(ID_INSERTED_KEY)
+        }
     }
     val reminder by viewModel.reminderById.observeAsState()
     reminder?.let{RefreshItemInList(reminder, viewModel) }
@@ -99,7 +101,8 @@ fun deleteReminder(reminder: Reminder, viewModel: ReminderViewModel){
 
 @Composable
 fun RefreshItemInList(reminder:Reminder?, viewModel: ReminderViewModel){
-    reminder?.let{ viewModel.updateReminderList(it!!)}
+    LaunchedEffect(key1 = true ){
+    reminder?.let{ viewModel.updateReminderList(it!!)}}
 }
 
 fun fetchUpdatedItem(idReminder:Long, viewModel: ReminderViewModel){
@@ -115,7 +118,7 @@ fun NewReminderFab(isVisible: Boolean, onItemClick: (Long?) -> Unit){
             onClick = {onItemClick(null) },
 
         ) {
-            Icon(painter = painterResource(id = R.drawable.ic_tree), contentDescription ="add")
+            Icon(painter = painterResource(id = R.drawable.ic_christmas_bell), contentDescription ="add")
         }
     }
 }

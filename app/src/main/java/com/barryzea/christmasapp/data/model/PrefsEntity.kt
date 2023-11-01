@@ -8,4 +8,5 @@ package com.barryzea.christmasapp.data.model
  **/
 
 data class PrefsEntity(val darkTheme:Boolean=false,
-    val dateNotify:Boolean=false)
+    val dateNotify:Boolean=false,
+    val alreadyIsDate:Boolean=false)

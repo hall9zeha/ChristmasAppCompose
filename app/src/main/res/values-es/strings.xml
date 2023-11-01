@@ -17,4 +17,6 @@
     <string name="writeYourReminderHere">Escribe aquí tu recordatorio</string>
     <string name="successfulSave">Guardado correctamente</string>
     <string name="christmas_notify">Christmas notify</string>
+    <string name="aboutThisMsg">Christmas countdown App \n        |desarrollada por  Barry Zea H. \n     |con la colaboración de\n     |Martha (Thx).</string>
+    <string name="countdownMsg">Ya es navidad! Felices fiestas</string>
 </resources>

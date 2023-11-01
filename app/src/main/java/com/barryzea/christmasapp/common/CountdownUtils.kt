@@ -1,9 +1,13 @@
 package com.barryzea.christmasapp.common
 
 import android.util.Log
+import com.barryzea.christmasapp.MyApp
+import com.barryzea.christmasapp.R
 import com.barryzea.christmasapp.data.model.CountdownEntity
+import com.barryzea.christmasapp.data.model.Reminder
 
 import java.util.Calendar
+import java.util.Random
 import java.util.concurrent.TimeUnit
 
 
@@ -19,7 +23,10 @@ fun getDays():CountdownEntity{
     var christmasYear = calendar.get(Calendar.YEAR)
 
     var setupChristmas= Calendar.getInstance()
+    //El conteo de los meses en la mayoría de las librerías  en programación comienzan en 0, así
+    //que es la razón de poner  11 como mes de diciembre
     setupChristmas.set(christmasYear,11,25)
+
     //Si ya se pasó de la fecha esperada, reajustamos el calendario
     if(Calendar.getInstance().timeInMillis > setupChristmas.timeInMillis){
         val cal = Calendar.getInstance()
@@ -34,7 +41,18 @@ fun getDays():CountdownEntity{
     val minutes = (60-calendar.get(Calendar.MINUTE))
     val seconds = (60-calendar.get(Calendar.SECOND))
     return if( days==0){
-       CountdownEntity(itsChristmas = true)
+       if(checkIfIsAlreadyCountdownDate()){
+            setAlarm(
+                Reminder(
+                    Random().nextInt().toLong(),
+                MyApp.context?.getString(R.string.countdownMsg)!!,
+                getDatetimeWithoutHours(Calendar.getInstance().timeInMillis),
+                true
+            )
+            )
+
+        }
+        CountdownEntity(itsChristmas = true)
     }else{
         CountdownEntity(days,hours,minutes,seconds)
     }

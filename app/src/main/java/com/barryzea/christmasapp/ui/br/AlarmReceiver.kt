@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import com.barryzea.christmasapp.R
 import com.barryzea.christmasapp.common.REMINDER_ENTITY_KEY
+import com.barryzea.christmasapp.common.checkIfIsAlreadyCountdownDate
 import com.barryzea.christmasapp.common.getDatetimeWithoutHours
 import com.barryzea.christmasapp.common.preferences.SettingsStore
 import com.barryzea.christmasapp.common.sendNotification
@@ -19,6 +20,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 import java.util.Calendar
+import java.util.Random
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -45,7 +47,15 @@ class AlarmReceiver: BroadcastReceiver() {
                         }
                     }
                 }
+                if(checkIfIsAlreadyCountdownDate()){
+                    setAlarm(Reminder(Random().nextLong(),
+                        ctx?.getString(R.string.countdownMsg)!!,
+                        getDatetimeWithoutHours(Calendar.getInstance().timeInMillis),
+                        true
+                    ))
+                }
             }
+           
 
         }else{// Si no se ha reiniciado o apagado el movil
             var reminderEntity:Reminder? = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
