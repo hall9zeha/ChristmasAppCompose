@@ -1,18 +1,13 @@
 package com.barryzea.christmasapp.ui.viewModel
 
-import android.content.Context
-import android.widget.Toast
-import androidx.compose.runtime.collectAsState
-import androidx.datastore.dataStore
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.barryzea.christmasapp.MyApp
 import com.barryzea.christmasapp.common.preferences.SettingsStore
 import com.barryzea.christmasapp.data.model.PrefsEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,19 +30,20 @@ class SettingsViewModel @Inject constructor(private val datastore:SettingsStore)
 
   init {
     getPreferences()
-    toggleSwitch(!prefsEntity.darkTheme!!)
+    toggleDarkModeSwitch(!prefsEntity.darkTheme!!)
     toggleNotifySwitch(!prefsEntity.dateNotify)
       }
 
-  fun getPreferences(){
+  private fun getPreferences(){
     viewModelScope.launch {
       datastore.getFromDataStore().collect() {
         prefsEntity = it
+        Log.e("TAG", it.dateNotify.toString() )
       }
     }
   }
 
-  fun toggleSwitch(stateSwitch:Boolean){
+  fun toggleDarkModeSwitch(stateSwitch:Boolean){
     _isSwitchOn.value = stateSwitch.not()
 
   }

@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.barryzea.christmasapp.common.SingleLiveData
+import com.barryzea.christmasapp.common.preferences.SettingsStore
+import com.barryzea.christmasapp.data.model.PrefsEntity
 import com.barryzea.christmasapp.data.model.Reminder
 import com.barryzea.christmasapp.data.repository.MainRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +29,7 @@ import javax.inject.Inject
  **/
 
 @HiltViewModel
-class ReminderViewModel @Inject constructor(private val repository: MainRepository):ViewModel() {
+class ReminderViewModel @Inject constructor(private val repository: MainRepository, private val datastore:SettingsStore):ViewModel() {
 
  private val viewModelJob= SupervisorJob()
  private val uiScope= CoroutineScope(Dispatchers.Main  + viewModelJob)
@@ -44,9 +46,19 @@ class ReminderViewModel @Inject constructor(private val repository: MainReposito
  private var _updatedRow:MutableLiveData<Int> = MutableLiveData()
  val updatedRow:LiveData<Int> = _updatedRow
 
- override fun onCleared() {
-  super.onCleared()
-  viewModelJob.cancel()
+ private var _prefsEntity: PrefsEntity = PrefsEntity()
+ val prefsEntity:PrefsEntity  get() =  _prefsEntity
+
+ init{
+   getPreferences()
+ }
+
+ private fun getPreferences(){
+  viewModelScope.launch {
+   datastore.getFromDataStore().collect() {
+    _prefsEntity = it
+    }
+  }
  }
  fun saveReminder(reminder:Reminder){
   uiScope.launch { _idInserted.value=repository.saveReminder(reminder) }
@@ -61,7 +73,9 @@ class ReminderViewModel @Inject constructor(private val repository: MainReposito
   }
  fun updateReminderList(reminder: Reminder){
   val index = _remindersList.value.indexOf(reminder)
-  _remindersList.value[index] = reminder
+  if(_remindersList.value.contains(reminder)) {
+   _remindersList.value[index] = reminder
+  }
  }
  fun getAllReminders(){
   uiScope.launch { _remindersList.value=repository.getAllReminders() }
@@ -78,4 +92,9 @@ class ReminderViewModel @Inject constructor(private val repository: MainReposito
 
   }
  }
+ override fun onCleared() {
+  super.onCleared()
+  viewModelJob.cancel()
+ }
+
 }

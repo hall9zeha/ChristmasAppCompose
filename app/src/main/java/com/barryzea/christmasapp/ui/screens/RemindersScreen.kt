@@ -26,6 +26,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import com.barryzea.christmasapp.R
+import com.barryzea.christmasapp.common.cancelNotification
+import com.barryzea.christmasapp.common.removeAlarm
 import com.barryzea.christmasapp.data.model.Reminder
 import com.barryzea.christmasapp.ui.components.ID_INSERTED_KEY
 import com.barryzea.christmasapp.ui.components.RemindersList
@@ -90,6 +92,8 @@ fun RemindersScreen(
     }
 }
 fun deleteReminder(reminder: Reminder, viewModel: ReminderViewModel){
+    removeAlarm(reminder)
+    cancelNotification(reminder.id)
     viewModel.deleteReminder(reminder)
 }
 
