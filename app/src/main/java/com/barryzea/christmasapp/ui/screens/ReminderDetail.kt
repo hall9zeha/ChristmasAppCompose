@@ -45,6 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.barryzea.christmasapp.R
 import com.barryzea.christmasapp.common.cancelNotification
 import com.barryzea.christmasapp.common.setAlarm
+import com.barryzea.christmasapp.common.toDateString
 import com.barryzea.christmasapp.data.model.Reminder
 import com.barryzea.christmasapp.data.model.localTheme
 import com.barryzea.christmasapp.ui.theme.christmasTypography
@@ -171,18 +172,7 @@ private fun getArguments(idReminder: Long?, viewModel: ReminderViewModel){
     }
 
 }
-@Composable
-private fun toDateString(long: Long):String{
-    //El datepicker devuelve una fecha con un día menos a la actual
-    //lo resuelvo de la siguiente manera
-    val pattern = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    val selectedUtc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-    selectedUtc.timeInMillis = long
-    val localTime=Calendar.getInstance()
-    localTime.set(selectedUtc.get(Calendar.YEAR),selectedUtc.get(Calendar.MONTH), selectedUtc.get(Calendar.DATE))
 
-    return pattern.format(localTime.timeInMillis)
-}
 @Composable
 private fun SetUpReminderById(reminder: Reminder?){
 reminder.let {

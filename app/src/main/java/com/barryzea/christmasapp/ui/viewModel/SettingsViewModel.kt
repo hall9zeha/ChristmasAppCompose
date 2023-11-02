@@ -49,6 +49,7 @@ class SettingsViewModel @Inject constructor(private val datastore:SettingsStore)
   }
   fun toggleNotifySwitch(stateAllow:Boolean){
     _notifyAllow.value = stateAllow.not()
+
   }
   fun saveToDataStore(prefsEntity:PrefsEntity){
     viewModelScope.launch {

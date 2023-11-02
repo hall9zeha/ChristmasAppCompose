@@ -27,6 +27,7 @@ import com.barryzea.christmasapp.ui.br.AlarmReceiver
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import java.util.TimeZone
 
 
 /**
@@ -116,6 +117,17 @@ fun getDatetimeWithoutHours(timeInMillis: Long): Long {
     val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)
     val dateStringFormatted = sdf.format(timeInMillis)
     return sdf.parse(dateStringFormatted)?.time ?: 0
+}
+fun toDateString(long: Long):String{
+    //El datepicker devuelve una fecha con un día menos a la actual
+    //lo resuelvo de la siguiente manera
+    val pattern = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val selectedUtc = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+    selectedUtc.timeInMillis = long
+    val localTime=Calendar.getInstance()
+    localTime.set(selectedUtc.get(Calendar.YEAR),selectedUtc.get(Calendar.MONTH), selectedUtc.get(Calendar.DATE))
+
+    return pattern.format(localTime.timeInMillis)
 }
 fun checkIfIsAlreadyCountdownDate(month:Int = 12, day:Int=25):Boolean{
     val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.ROOT)

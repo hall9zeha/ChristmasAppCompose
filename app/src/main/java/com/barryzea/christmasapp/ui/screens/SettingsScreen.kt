@@ -41,8 +41,8 @@ private lateinit  var isClicked:MutableState<Boolean>
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel= hiltViewModel()){
 
-    var stateSwitch = viewModel.isSwitchOn.collectAsState(false)
-    var stateNotify = viewModel.notifyAllow.collectAsState(false)
+    val stateSwitch = viewModel.isSwitchOn.collectAsState(false)
+    val stateNotify = viewModel.notifyAllow.collectAsState(false)
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission() ){
         if(it){
             isGranted(viewModel,stateNotify)

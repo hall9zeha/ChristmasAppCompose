@@ -1,5 +1,6 @@
 package com.barryzea.christmasapp.ui.components
 
+import android.graphics.Paint.Align
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -17,11 +18,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.barryzea.christmasapp.R
+import com.barryzea.christmasapp.common.toDateString
 import com.barryzea.christmasapp.data.model.Reminder
 
 
@@ -42,6 +45,7 @@ fun ReminderItem(reminderEntity:Reminder, onClick:(Reminder)->Unit, onDeleteClic
             .clickable { onClick(reminderEntity) },
         shape = RoundedCornerShape(8.dp)
     ) {
+        Text(text = toDateString(reminderEntity.timeInMillis), modifier=Modifier.align(Alignment.End).padding(end = 4.dp, top = 4.dp))
         Text(text = reminderEntity.description, modifier= Modifier
             .wrapContentSize()
             .padding(8.dp) )
