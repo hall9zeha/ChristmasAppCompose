@@ -1,0 +1,37 @@
+com.barryzea.library.test.library-annotation-experimental-1.3.0-0 /home/hall9000/.gradle/caches/transforms-3/0488080fb3701ce921d4b1a313ca6f75/transformed/annotation-experimental-1.3.0/res
+com.barryzea.library.test.library-core-runtime-2.2.0-1 /home/hall9000/.gradle/caches/transforms-3/06ac9b72de456e24875c0246c96e1496/transformed/core-runtime-2.2.0/res
+com.barryzea.library.test.library-profileinstaller-1.3.0-2 /home/hall9000/.gradle/caches/transforms-3/0832380dd63ce565b12829826cc73a4e/transformed/profileinstaller-1.3.0/res
+com.barryzea.library.test.library-sqlite-2.4.0-3 /home/hall9000/.gradle/caches/transforms-3/157f527610ef8887654e26740fbef15a/transformed/sqlite-2.4.0/res
+com.barryzea.library.test.library-room-runtime-2.6.0-4 /home/hall9000/.gradle/caches/transforms-3/15fb33ddc6dd21f48ca0ddc99eeecf2f/transformed/room-runtime-2.6.0/res
+com.barryzea.library.test.library-startup-runtime-1.1.1-5 /home/hall9000/.gradle/caches/transforms-3/18874ea2c14fe75376bf57514cb2a727/transformed/startup-runtime-1.1.1/res
+com.barryzea.library.test.library-constraintlayout-2.0.1-6 /home/hall9000/.gradle/caches/transforms-3/1e2f5153f76fa462cdbe6381272741f9/transformed/constraintlayout-2.0.1/res
+com.barryzea.library.test.library-drawerlayout-1.1.1-7 /home/hall9000/.gradle/caches/transforms-3/1fb3ea730580f125aff684bee841a4a9/transformed/drawerlayout-1.1.1/res
+com.barryzea.library.test.library-lifecycle-process-2.6.1-8 /home/hall9000/.gradle/caches/transforms-3/2a937591e7f996ac1860524608ff09d5/transformed/lifecycle-process-2.6.1/res
+com.barryzea.library.test.library-savedstate-1.2.1-9 /home/hall9000/.gradle/caches/transforms-3/46196500dd1e1fe824dab61e328fe69d/transformed/savedstate-1.2.1/res
+com.barryzea.library.test.library-lifecycle-livedata-2.6.1-10 /home/hall9000/.gradle/caches/transforms-3/60efc182993974fb85e55f8ae00196c0/transformed/lifecycle-livedata-2.6.1/res
+com.barryzea.library.test.library-viewpager2-1.0.0-11 /home/hall9000/.gradle/caches/transforms-3/665a941289d07bd7077abf92d3c05f2e/transformed/viewpager2-1.0.0/res
+com.barryzea.library.test.library-transition-1.2.0-12 /home/hall9000/.gradle/caches/transforms-3/6999896dd25407fccee507940f99e53c/transformed/transition-1.2.0/res
+com.barryzea.library.test.library-core-1.5.0-13 /home/hall9000/.gradle/caches/transforms-3/7478dbe1dc659605d58e0cb7133ee27f/transformed/core-1.5.0/res
+com.barryzea.library.test.library-appcompat-resources-1.6.1-14 /home/hall9000/.gradle/caches/transforms-3/75605c6c31913121881b5698520ddde0/transformed/appcompat-resources-1.6.1/res
+com.barryzea.library.test.library-emoji2-1.2.0-15 /home/hall9000/.gradle/caches/transforms-3/7bed27e770a36617532426c78dec5ce2/transformed/emoji2-1.2.0/res
+com.barryzea.library.test.library-lifecycle-livedata-core-2.6.1-16 /home/hall9000/.gradle/caches/transforms-3/7cafa49da734181f01e8ba1080c552cd/transformed/lifecycle-livedata-core-2.6.1/res
+com.barryzea.library.test.library-lifecycle-viewmodel-2.6.1-17 /home/hall9000/.gradle/caches/transforms-3/83a89f2f42707a7cae97d2edb00cdfda/transformed/lifecycle-viewmodel-2.6.1/res
+com.barryzea.library.test.library-lifecycle-runtime-2.6.1-18 /home/hall9000/.gradle/caches/transforms-3/843f1e96077cf5ca3d8aae644bf64aa6/transformed/lifecycle-runtime-2.6.1/res
+com.barryzea.library.test.library-emoji2-views-helper-1.2.0-19 /home/hall9000/.gradle/caches/transforms-3/93a8739e3fbbb56592d6efd9e9613553/transformed/emoji2-views-helper-1.2.0/res
+com.barryzea.library.test.library-coordinatorlayout-1.1.0-20 /home/hall9000/.gradle/caches/transforms-3/a1a90246aa3e984e6eba212c0a5d3a5a/transformed/coordinatorlayout-1.1.0/res
+com.barryzea.library.test.library-sqlite-framework-2.4.0-21 /home/hall9000/.gradle/caches/transforms-3/a5bbdda95fdecb4dc64e8a42b9539910/transformed/sqlite-framework-2.4.0/res
+com.barryzea.library.test.library-room-ktx-2.6.0-22 /home/hall9000/.gradle/caches/transforms-3/abf59d83d0b0a3412963a8e545818128/transformed/room-ktx-2.6.0/res
+com.barryzea.library.test.library-core-ktx-1.12.0-23 /home/hall9000/.gradle/caches/transforms-3/af69431efc6ee1df5c9f0b5019e09f8d/transformed/core-ktx-1.12.0/res
+com.barryzea.library.test.library-activity-1.8.0-24 /home/hall9000/.gradle/caches/transforms-3/bcd5f4fe9648c758e00e36a212378b9d/transformed/activity-1.8.0/res
+com.barryzea.library.test.library-recyclerview-1.1.0-25 /home/hall9000/.gradle/caches/transforms-3/bdfd9401fa357ff82d99618726ff8b7f/transformed/recyclerview-1.1.0/res
+com.barryzea.library.test.library-cardview-1.0.0-26 /home/hall9000/.gradle/caches/transforms-3/ce1edf665f3f05dea575a564791f4644/transformed/cardview-1.0.0/res
+com.barryzea.library.test.library-fragment-1.3.6-27 /home/hall9000/.gradle/caches/transforms-3/d2a146e3102589d16b8837b1daa044eb/transformed/fragment-1.3.6/res
+com.barryzea.library.test.library-core-1.12.0-28 /home/hall9000/.gradle/caches/transforms-3/d6773835ebc664a8c1d4316d18f8ea7a/transformed/core-1.12.0/res
+com.barryzea.library.test.library-lifecycle-viewmodel-savedstate-2.6.1-29 /home/hall9000/.gradle/caches/transforms-3/e04b82ffedf00ff7dc509dbb3d936f1b/transformed/lifecycle-viewmodel-savedstate-2.6.1/res
+com.barryzea.library.test.library-material-1.10.0-30 /home/hall9000/.gradle/caches/transforms-3/f68a0656d5bf1d7c694d01d21965fe35/transformed/material-1.10.0/res
+com.barryzea.library.test.library-appcompat-1.6.1-31 /home/hall9000/.gradle/caches/transforms-3/f9cbfaf24de2c01260aca1a3cb41f797/transformed/appcompat-1.6.1/res
+com.barryzea.library.test.library-androidTest-32 /media/hall9000/ASUS_E/LEARNING CURSO_ANDROID/ANDROID CON KOTLIN/ChristmasApp/library/build/generated/res/resValues/androidTest/debug
+com.barryzea.library.test.library-mergeDebugAndroidTestResources-33 /media/hall9000/ASUS_E/LEARNING CURSO_ANDROID/ANDROID CON KOTLIN/ChristmasApp/library/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+com.barryzea.library.test.library-mergeDebugAndroidTestResources-34 /media/hall9000/ASUS_E/LEARNING CURSO_ANDROID/ANDROID CON KOTLIN/ChristmasApp/library/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+com.barryzea.library.test.library-merged_res-35 /media/hall9000/ASUS_E/LEARNING CURSO_ANDROID/ANDROID CON KOTLIN/ChristmasApp/library/build/intermediates/merged_res/debugAndroidTest
+com.barryzea.library.test.library-packaged_res-36 /media/hall9000/ASUS_E/LEARNING CURSO_ANDROID/ANDROID CON KOTLIN/ChristmasApp/library/build/intermediates/packaged_res/debug

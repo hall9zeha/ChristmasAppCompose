@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
 }
@@ -43,7 +43,8 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        //1.5.3 versión de compose compatible con kotlin 1.9.10v
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     packaging {
         resources {
@@ -74,8 +75,8 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:1.5.2")
 
     //Dagger hilt
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    implementation("com.google.dagger:hilt-android:2.48")
+    ksp("com.google.dagger:hilt-android-compiler:2.48")
     implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
     //Coil for images
     //implementation("io.coil-kt:coil:2.4.0")
@@ -90,10 +91,9 @@ dependencies {
     //Splash screen librería
     implementation("androidx.core:core-splashscreen:1.0.1")
     //Room
-    implementation ("androidx.room:room-runtime:2.4.3")
-    implementation ("androidx.room:room-ktx:2.4.3")
-    annotationProcessor ("androidx.room:room-compiler:2.4.3")
-    kapt ("androidx.room:room-compiler:2.4.3")
+    implementation ("androidx.room:room-runtime:2.6.0")
+    implementation ("androidx.room:room-ktx:2.6.0")
+    ksp ("androidx.room:room-compiler:2.6.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -104,7 +104,4 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
 
-}
-kapt{
-    correctErrorTypes = true
 }

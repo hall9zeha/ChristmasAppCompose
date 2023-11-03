@@ -13,12 +13,10 @@ import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
-import com.barryzea.christmasapp.MainActivity
+import com.barryzea.christmasapp.ui.MainActivity
 import com.barryzea.christmasapp.MyApp
 import com.barryzea.christmasapp.MyApp.Companion.context
 import com.barryzea.christmasapp.R
@@ -148,7 +146,7 @@ fun setAlarm(reminderEntity:Reminder){
     val intent = Intent(context, AlarmReceiver::class.java)
     intent.putExtra(REMINDER_ENTITY_KEY,reminderEntity)
     val pendingIntent = PendingIntent.getBroadcast(context,reminderEntity.id.toInt(), intent,PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-    val mainActivityIntent = Intent(context,MainActivity::class.java)
+    val mainActivityIntent = Intent(context, MainActivity::class.java)
     val basicPendingIntent = PendingIntent.getActivity(context,reminderEntity.id.toInt(),mainActivityIntent,PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
     val clock = AlarmManager.AlarmClockInfo(reminderEntity.timeInMillis,basicPendingIntent)
