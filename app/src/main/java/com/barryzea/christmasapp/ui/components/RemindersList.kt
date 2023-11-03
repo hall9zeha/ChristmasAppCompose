@@ -25,15 +25,13 @@ import com.barryzea.christmasapp.data.model.Reminder
 fun RemindersList(
     itemList: List<Reminder>,
     scrollState: LazyStaggeredGridState,
-    nestedScrollConnection: NestedScrollConnection,
     paddingValues: PaddingValues,
     onItemClick:(reminder:Reminder)->Unit,
     onDeleteClick:(reminder:Reminder)->Unit) {
     LazyVerticalStaggeredGrid(
     modifier = Modifier
     .fillMaxSize()
-    .padding(paddingValues)
-    .nestedScroll(nestedScrollConnection),
+    .padding(paddingValues),
     state = scrollState,
     columns = StaggeredGridCells.Fixed(2),
     contentPadding = PaddingValues(2.dp)
