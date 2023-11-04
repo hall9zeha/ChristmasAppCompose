@@ -8,15 +8,24 @@ plugins {
 
 android {
     namespace = "com.barryzea.christmasapp"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
+        configurations.all {
+            resolutionStrategy {
+                force("androidx.emoji2:emoji2-views-helper:1.3.0")
+                force("androidx.emoji2:emoji2:1.3.0")
+            }
+        }
+
         applicationId = "com.barryzea.christmasapp"
-        minSdk = 24
+        minSdk = 23
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
-        compileSdkPreview = "UpsideDownCake"
+        //habilitar solo si se realiza pruebas en debug (compileSdk 33),para release se debe deshabilitar
+        //y compilar con el sdk 34
+        //compileSdkPreview = "UpsideDownCake"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -67,7 +76,7 @@ dependencies {
 
 
     //Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.4")
+    implementation("androidx.navigation:navigation-compose:2.7.5")
     //annotation
     implementation("androidx.annotation:annotation:1.7.0")
     //ViewModel libraries
