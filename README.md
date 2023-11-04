@@ -12,7 +12,7 @@
 * [Material components and Material Design](https://material.io/components)
 * [Compose](https://developer.android.com/jetpack/compose)
 * [Navigation Compose](https://developer.android.com/jetpack/compose/navigation)
-* [Sata store](https://developer.android.com/topic/libraries/architecture/datastore)
+* [Data store](https://developer.android.com/topic/libraries/architecture/datastore)
 * [Lottie animations](https://lottiefiles.com/blog/working-with-lottie/getting-started-with-lottie-animations-in-android-app)
 * [Dagger Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
 * [Room database](https://developer.android.com/jetpack/androidx/releases/room?gclid=EAIaIQobChMIh-Hoi7C_-gIVRxXUAR2kZAAsEAAYASAAEgJnivD_BwE&gclsrc=aw.ds)
