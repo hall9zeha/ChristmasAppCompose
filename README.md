@@ -1,4 +1,4 @@
-# ChristmasAppCompose
+# Christmas countdown App
 ||
 |--|
 |<img src="https://github.com/hall9zeha/ChristmasAppCompose/blob/main/app/src/main/ic_launcher-playstore.png" align="left"  hight="260" width="260" hspace="10" vspace="10">|
