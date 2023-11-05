@@ -46,6 +46,7 @@ The main reason for doing this little project is to learn as much as possible ab
 ## Contributors
 |||
 |--|--|
+|[@Hall9Zeha](https://github.com/hall9zeha)| ![](https://avatars.githubusercontent.com/u/29205928?s=48)|
 |[@MarthaB94](https://github.com/MarthaB94)| ![](https://avatars.githubusercontent.com/u/128934015?s=48)|
 
 
