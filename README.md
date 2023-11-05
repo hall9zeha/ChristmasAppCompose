@@ -6,7 +6,15 @@
 
 ## Download demo 📂 [click here](https://github.com/hall9zeha/ChristmasAppCompose/raw/main/demo/christmas-countdown.apk)
 
-## It was used 🔧:
+## Motivation 
+The main reason for doing this little project is to learn as much as possible about Android's jetpack compose, and if it helps whoever comes across this little example, all the better. Also obviously (xD) because I like Christmas.
+
+## Requeriments 🤖
+
+* CompileSdk 34
+* Supported targetSdkVersion 33
+
+## It was used 🔧
 * [Arquitectura MVVM](https://developer.android.com/jetpack/guide)
 * [Lyfecycle view model](https://developer.android.com/jetpack/androidx/releases/lifecycle)
 * [Material components and Material Design](https://material.io/components)
@@ -18,6 +26,11 @@
 * [Room database](https://developer.android.com/jetpack/androidx/releases/room?gclid=EAIaIQobChMIh-Hoi7C_-gIVRxXUAR2kZAAsEAAYASAAEgJnivD_BwE&gclsrc=aw.ds)
 * [Splash Screen Android library](https://developer.android.com/develop/ui/views/launch/splash-screen)
 
+## Features 📝
+* Countodwn timer
+* Create reminder notes
+* Update and delete reminders
+* Notification of reminders
 
 ## Screenshots 🖼️
 ||||
@@ -30,6 +43,9 @@
 |<p align="center" width="70%"><img src="https://github.com/hall9zeha/ChristmasAppCompose/blob/main/screenshots/screen5.jpg"  alt="drawing" width="70%" height="70%"/></p>|<p align="center" width="70%"><img src="https://github.com/hall9zeha/ChristmasAppCompose/blob/main/screenshots/screen3.jpg"  alt="drawing" width="70%" height="70%"/></p>|<p align="center" width="70%"><img src="https://github.com/hall9zeha/ChristmasAppCompose/blob/main/screenshots/screen6.jpg"  alt="drawing" width="70%" height="70%"/></p>|
 |<p align="center" width="70%"><img src="https://github.com/hall9zeha/ChristmasAppCompose/blob/main/screenshots/screen8.jpg"  alt="drawing" width="70%" height="70%"/></p>|
 
-
+## Contributors
+|||
+|--|--|
+|[@MarthaB94](https://github.com/MarthaB94)| ![](https://avatars.githubusercontent.com/u/128934015?s=48)|
 
 
