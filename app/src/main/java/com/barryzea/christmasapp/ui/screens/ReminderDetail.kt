@@ -39,11 +39,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.dataStore
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.barryzea.christmasapp.R
-import com.barryzea.christmasapp.common.cancelNotification
 import com.barryzea.christmasapp.common.setAlarm
 import com.barryzea.christmasapp.common.toDateString
 import com.barryzea.christmasapp.data.model.Reminder
@@ -52,11 +49,7 @@ import com.barryzea.christmasapp.ui.theme.christmasTypography
 import com.barryzea.christmasapp.ui.theme.textHintColorDark
 import com.barryzea.christmasapp.ui.theme.textHintColorLight
 import com.barryzea.christmasapp.ui.viewModel.ReminderViewModel
-import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
-import java.util.TimeZone
 
 
 /**
@@ -155,7 +148,7 @@ fun ReminderDetail(viewModel:ReminderViewModel = hiltViewModel(), idReminder: Lo
                 }
             }
             //Controlamos el evento onBackPressed
-            BackHandler (onBack = {onBack(viewModel, idReminder)})
+            BackHandler (onBack = {onBack(viewModel, idReminder,upPress)})
             //si se hizo click en el ícono calendario del topBar
             if(showDialog.value) ShowDatePickerDialog()
         }
@@ -196,11 +189,15 @@ fun TopAppBar(){
         })
 }
 
-private fun saveOrUpdate(viewModel: ReminderViewModel, idReminder: Long?) {
-    if(isNewRegister.value){
+private fun saveOrUpdate(viewModel: ReminderViewModel, idReminder: Long?, upPress: (Long?) -> Unit) {
+    if(isNewRegister.value && editTextValue.value.isNotEmpty()){
         val reminder = Reminder(description= editTextValue.value, timeInMillis = timeInMillisForSave?.value!!, enable = reminderEnable.value)
         viewModel.saveReminder(reminder)
-    }else{
+    }
+    else if(editTextValue.value.isEmpty()){
+        upPress(0)
+    }
+    else{
         val reminder = Reminder(id = idReminder!!, description= editTextValue.value, timeInMillis = timeInMillisForSave?.value!!, enable = reminderEnable.value)
         viewModel.updateReminder(reminder)
     }
@@ -229,8 +226,8 @@ fun ShowDatePickerDialog(){
     }
 
 }
-private fun onBack(viewModel: ReminderViewModel, idReminder: Long?) {
-    saveOrUpdate(viewModel, idReminder)
+private fun onBack(viewModel: ReminderViewModel, idReminder: Long?, upPress: (Long?) -> Unit) {
+    saveOrUpdate(viewModel, idReminder, upPress)
 }
 @Preview(
     showBackground = true,
