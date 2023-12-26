@@ -1,5 +1,6 @@
 package com.barryzea.christmasapp.common
 
+import android.app.NotificationManager
 import android.util.Log
 import com.barryzea.christmasapp.MyApp
 import com.barryzea.christmasapp.R
@@ -34,17 +35,17 @@ fun getDays():CountdownEntity{
         christmasYear = cal.get(Calendar.YEAR)
         setupChristmas.set(christmasYear,11,25)
     }
-    var christmasDays =TimeUnit.MILLISECONDS.toDays(setupChristmas.timeInMillis)
+    var christmasDays =TimeUnit.MILLISECONDS.toDays(setupChristmas.timeInMillis) - 1
     val days = (christmasDays - TimeUnit.MILLISECONDS.toDays(calendar.timeInMillis)).toInt()
 
     val hours= (23-calendar.get(Calendar.HOUR_OF_DAY))
     val minutes = (60-calendar.get(Calendar.MINUTE))
     val seconds = (60-calendar.get(Calendar.SECOND))
-    return if( days==0){
+    return if( days<0){
        if(checkIfIsAlreadyCountdownDate()){
             setAlarm(
                 Reminder(
-                    Random().nextInt().toLong(),
+                    CHRISTMAS_ID_NOTIFY.toLong(),
                 MyApp.context?.getString(R.string.countdownMsg)!!,
                 getDatetimeWithoutHours(Calendar.getInstance().timeInMillis),
                 true

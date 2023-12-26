@@ -41,6 +41,7 @@ import java.util.TimeZone
 private const val CHANNEL_ID ="christmas_notify_id"
 private const val CHANNEL_NAME = "ChristmasApp"
 const val REMINDER_ENTITY_KEY = "REMINDER_ENTITY_KEY"
+const val CHRISTMAS_ID_NOTIFY = 252525
 
 fun getFontProviders():GoogleFont.Provider{
     return GoogleFont.Provider(
@@ -141,6 +142,7 @@ fun checkIfIsAlreadyCountdownDate(month:Int = 12, day:Int=25):Boolean{
 }
 @SuppressLint("ScheduleExactAlarm")
 fun setAlarm(reminderEntity:Reminder){
+
     val context = MyApp.context
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val intent = Intent(context, AlarmReceiver::class.java)

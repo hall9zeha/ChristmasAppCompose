@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.barryzea.christmasapp.R
+import com.barryzea.christmasapp.common.CHRISTMAS_ID_NOTIFY
 import com.barryzea.christmasapp.common.REMINDER_ENTITY_KEY
 import com.barryzea.christmasapp.common.checkIfIsAlreadyCountdownDate
 import com.barryzea.christmasapp.common.getDatetimeWithoutHours
@@ -28,6 +29,7 @@ class AlarmReceiver: BroadcastReceiver() {
     @Inject
    lateinit var preferences:SettingsStore
 
+
     @Inject
     lateinit var roomDb:ReminderDatabase
 
@@ -48,7 +50,7 @@ class AlarmReceiver: BroadcastReceiver() {
                     }
                 }
                 if(checkIfIsAlreadyCountdownDate()){
-                    setAlarm(Reminder(Random().nextLong(),
+                    setAlarm(Reminder(CHRISTMAS_ID_NOTIFY.toLong(),
                         ctx?.getString(R.string.countdownMsg)!!,
                         getDatetimeWithoutHours(Calendar.getInstance().timeInMillis),
                         true
