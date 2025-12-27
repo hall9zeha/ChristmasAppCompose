@@ -4,7 +4,7 @@
 |<img src="https://github.com/hall9zeha/ChristmasAppCompose/blob/main/app/src/main/ic_launcher-playstore.png" align="left"  hight="260" width="260" hspace="10" vspace="10">|
 |A Christmas countdown Android app using Compose Jetpack, an MVVM architecture pattern, Room database, Kotlin Flows, and Dependency Injection with Dagger Hilt.|
 
-## Download demo 📂 [click here](https://github.com/hall9zeha/ChristmasAppCompose/raw/main/demo/christmas-countdown.apk)
+## Download demo 📂 [click here](https://github.com/hall9zeha/ChristmasAppCompose/releases/download/v1.0.0/christmas-countdown.apk)
 
 ## Motivation 
 The main reason for doing this little project is to learn as much as possible about Android's jetpack compose, and if it helps whoever comes across this little example, all the better. Also obviously (xD) because I like Christmas.
