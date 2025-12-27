@@ -142,7 +142,6 @@ fun checkIfIsAlreadyCountdownDate(month:Int = 12, day:Int=25):Boolean{
 }
 @SuppressLint("ScheduleExactAlarm")
 fun setAlarm(reminderEntity:Reminder){
-
     val context = MyApp.context
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val intent = Intent(context, AlarmReceiver::class.java)
@@ -150,7 +149,6 @@ fun setAlarm(reminderEntity:Reminder){
     val pendingIntent = PendingIntent.getBroadcast(context,reminderEntity.id.toInt(), intent,PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     val mainActivityIntent = Intent(context, MainActivity::class.java)
     val basicPendingIntent = PendingIntent.getActivity(context,reminderEntity.id.toInt(),mainActivityIntent,PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-
     val clock = AlarmManager.AlarmClockInfo(reminderEntity.timeInMillis,basicPendingIntent)
     alarmManager.setAlarmClock(clock,pendingIntent)
 }
